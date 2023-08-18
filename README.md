@@ -18,13 +18,17 @@ In random order
 <!-- ## Link: here put link to the App  -->
 
 ## Description:
-Main purpose of this project was to learn React, fetching from APIs and how to use Git and GitHub. Developed with Mobile First Design. Idea sparked out while reading APIs features and remembering frustration from mismatched Spotify recommendations.
+Main purpose of this project was to learn React, fetching from APIs and how to use Git and GitHub.
+Developed with Mobile First Design. Idea sparked out while reading APIs features
+and recalling frustration from mismatched Spotify recommendations.
 
 <!-- ## The most crucial techniques that I have improved at/learned are: -->
 
 <!-- ## Usability:
-Othar than finalizing payment and "download" of the menu being self-promotion and not matching their description everything else should work as expected.
-All data is being stored as Local Storage so if you want to get rid of it [here](https://www.leadshook.com/help/how-to-clear-local-storage-in-google-chrome-browser/) is a quick tutorial. -->
+Othar than finalizing payment and "download" of the menu being self-promotion
+and not matching their description everything else should work as expected.
+All data is being stored as Local Storage so if you want to get rid of it
+[here](https://www.leadshook.com/help/how-to-clear-local-storage-in-google-chrome-browser/) is a quick tutorial. -->
 
 ## Credits:
 Color palette from Spotify <br>
