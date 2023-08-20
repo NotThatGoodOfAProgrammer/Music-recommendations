@@ -95,7 +95,7 @@ nav {
 
 .filters-slider-container {
   height: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: nowrap;
   flex-grow: 1;
 }
@@ -278,7 +278,7 @@ footer {
 
 .credits-container {
   height: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   flex-grow: 1;
 }
 
@@ -286,9 +286,9 @@ footer {
 /* App */
 .App {
   text-align: center;
-  /* display: flex;
+  display: flex;
   flex-direction: column;
-  align-items: center; */
+  align-items: center;
 }
 
 
@@ -297,6 +297,7 @@ footer {
   background-color: var(--spotify-black-solid);
   position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
   width: 100vw;
   transform: translateX(-100%);
@@ -343,7 +344,7 @@ footer {
   transform: translateX(-50%);
   background-color: var(--spotify-grey-solid);
   height: 370px;
-  overflow-y: scroll;
+  overflow-y: auto;
   border: var(--border-style);
   z-index: 1;
 }
@@ -359,49 +360,54 @@ footer {
 }
 
 
-@media (hover:hover) { /* check if it not mobile */
-  .filters-slider-container, .credits-container {
-    overflow: hidden;
-  }
-}
-
 /* placeholder */
 .placeholder {
   background-color: var(--spotify-grey-solid);
 }
 
 .placeholder span {
-  display: inline-block;
+  display: block;
   margin: 10px 0;
 }
 
 
 /* tablet design */
 @media (min-width: 700px) {
-  .filter-options {
-    width: 280px;
-    border: var(--border-style);
+  nav, footer {
+    width: 700px;
     left: 50%;
     transform: translateX(-50%);
   }
-}
 
-
-/* PC design */
-@media (min-width: 1000px) {
   .site-content {
-    width: 1000px;
+    width: 700px;
   }
 
-  .filters-slider-container {
-    overflow: hidden;
+
+  .filter-options {
+    width: 276px;
+    border: var(--border-style);
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .search-results-grid {
     grid-template-columns: calc(50% - 10px) calc(50% - 10px);
   }
 
-  .credits-container {
-    overflow: hidden;
+  .placeholder {
+    grid-column: span 2;
+  }
+
+  .slide-in {
+    width: 340px;
   }
 }
+
+
+/* PC design */
+/* @media (min-width: 1000px) {
+  .site-content {
+    width: 1000px;
+  }
+} */
