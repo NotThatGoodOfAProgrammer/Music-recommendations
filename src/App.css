@@ -4,7 +4,7 @@
   --spotify-grey-solid: rgb(130, 130, 130);
   --spotify-sand-solid: rgb(236, 235, 232);
   --spotify-white-solid: rgb(255, 255, 255);
-  --border-style: 1px solid rgba(48, 50, 59, 0.13);
+  --border-style: 1px solid rgba(48, 50, 59, 0.4);
 }
 
 html * {
@@ -75,6 +75,7 @@ nav, footer {
 nav {
   top: 0;
   border-bottom: var(--border-style);
+  box-sizing: border-box;
 }
 
 .picked-art-tab-container, .pop-up-button-container, .picked-art-tab, .pop-up-button,
@@ -94,7 +95,7 @@ nav {
 
 .filters-slider-container {
   height: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: nowrap;
   flex-grow: 1;
 }
@@ -108,6 +109,11 @@ nav {
 .filter {
   display: inline-block;
   height: 100%;
+  border-left: var(--border-style);
+}
+
+.filter:last-child{
+  border-right: var(--border-style);
 }
 
 .filter-button-container, .filter-button {
@@ -125,14 +131,13 @@ nav {
 
 .filter-options {
   padding: 20px 0;
-  display: none;
   position: fixed;
   top: 70px;
   left: 0px;
   background-color: var(--spotify-grey-solid);
   width: 100%;
   max-height: 200px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .filter-options ul {
@@ -145,8 +150,16 @@ nav {
   width: 50px;
 }
 
-.filter-button-container:hover .filter-options {
-  display: block;
+.filter-options, .fluid-row-content {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s, visibility 0.6s;
+  transition-delay: 0.1s; 
+}
+
+.filter-button-container:hover .filter-options, .add-genres:hover .fluid-row-content {
+  visibility: visible;
+  opacity: 1;
 }
 
 .genres-search-bar {
@@ -164,11 +177,12 @@ nav {
 
 /* get token and search components */
 .user-contribution {
+  padding: 5px;
   width: calc(100% - 10px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 5px;
+  align-items: center;
   row-gap: 10px;
   column-gap: 10px;
 }
@@ -177,7 +191,7 @@ nav {
   background-color: var(--spotify-green);
   border-radius: 10px;
   overflow: hidden;
-  padding: 5px 10px;
+  padding: 7px 10px;
 }
 
 .default-button {
@@ -252,7 +266,6 @@ nav {
 }
 
 .result-button {
-  border: var(--border-style);
   height: 100%;
 }
 
@@ -266,7 +279,7 @@ footer {
 
 .credits-container {
   height: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   flex-grow: 1;
 }
 
@@ -274,9 +287,9 @@ footer {
 /* App */
 .App {
   text-align: center;
-  /* display: flex;
+  display: flex;
   flex-direction: column;
-  align-items: center; */
+  align-items: center;
 }
 
 
@@ -285,6 +298,7 @@ footer {
   background-color: var(--spotify-black-solid);
   position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
   width: 100vw;
   transform: translateX(-100%);
@@ -313,7 +327,12 @@ footer {
 }
 
 .note-container {
-  padding: 10px;
+  padding: 10px 10px 10px 0;
+  min-height: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
 }
 
 .user-contribution {
@@ -327,12 +346,11 @@ footer {
 
 .fluid-row-content {
   position: absolute;
-  display: none;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--spotify-grey-solid);
   height: 370px;
-  overflow-y: scroll;
+  overflow-y: auto;
   border: var(--border-style);
   z-index: 1;
 }
@@ -347,9 +365,6 @@ footer {
   padding: 0;
 }
 
-.add-genres:hover .fluid-row-content {
-  display: block;
-}
 
 /* placeholder */
 .placeholder {
@@ -357,26 +372,70 @@ footer {
 }
 
 .placeholder span {
-  display: inline-block;
+  display: block;
   margin: 10px 0;
 }
 
 
-
-@media (min-width: 1000px) {
-  .site-content {
-    width: 1000px;
+/* tablet design */
+@media (min-width: 700px) {
+  nav, footer {
+    width: 700px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
-  .filters-slider-container {
-    overflow: hidden;
+  .site-content {
+    width: 700px;
+  }
+
+
+  .filter-options {
+    width: 276px;
+    border: var(--border-style);
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .search-results-grid {
     grid-template-columns: calc(50% - 10px) calc(50% - 10px);
   }
 
-  .credits-container {
-    overflow: hidden;
+  .placeholder {
+    grid-column: span 2;
+  }
+
+  .slide-in {
+    width: 340px;
+  }
+}
+
+
+/* PC design */
+@media (min-width: 1070px) {
+  nav, footer, .site-content {
+    transition: 1.5s;
+  }
+
+  .slide-in {
+    border-left: 2px solid var(--spotify-grey-solid);
+  }
+
+  .shown {
+    transform: translateX(calc(50vw - 537px));
+    transition: 1.5s;
+  }
+
+  /* after slide-in shows */
+  .App:has(.shown) > :where(nav, footer) {
+    transform: translateX(calc(185px - 50%));
+  }
+
+  .App:has(.shown) > .site-content {
+    transform: translateX(185px);
+  }
+
+  .App:has(.shown) > nav .picked-art-tab {
+    display: none;
   }
 }

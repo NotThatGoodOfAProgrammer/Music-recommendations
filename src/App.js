@@ -286,7 +286,7 @@ function GenresList(genres) {
 function Placeholder() {
   return (
     <div className='placeholder'>
-      <h2>Results not found</h2>
+      <h2>No results found</h2>
       <img src="/notFound.png" alt="results not found" />
       <span>Try changing filters and search text</span>
     </div>
@@ -371,7 +371,7 @@ function App() {
     const typeCheckboxes = typesOptions.querySelectorAll("input[type=checkbox]:checked");
     let types = [];
     Array.from(typeCheckboxes).forEach(checkbox => {
-      types = [...types, checkbox.parentElement.innerText];
+      types = [...types, (checkbox.parentElement.innerText || checkbox.parentElement.textContent)];
     })
     const typeParameter = "&type=" + types;
     
