@@ -153,7 +153,7 @@ nav {
 .filter-options, .fluid-row-content {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.7s, visibility 0.7s;
+  transition: opacity 0.6s, visibility 0.6s;
   transition-delay: 0.1s; 
 }
 
@@ -177,11 +177,12 @@ nav {
 
 /* get token and search components */
 .user-contribution {
+  padding: 5px;
   width: calc(100% - 10px);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 5px;
+  align-items: center;
   row-gap: 10px;
   column-gap: 10px;
 }
@@ -190,7 +191,7 @@ nav {
   background-color: var(--spotify-green);
   border-radius: 10px;
   overflow: hidden;
-  padding: 5px 10px;
+  padding: 7px 10px;
 }
 
 .default-button {
@@ -326,7 +327,12 @@ footer {
 }
 
 .note-container {
-  padding: 10px;
+  padding: 10px 10px 10px 0;
+  min-height: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
 }
 
 .user-contribution {
@@ -406,8 +412,30 @@ footer {
 
 
 /* PC design */
-/* @media (min-width: 1000px) {
-  .site-content {
-    width: 1000px;
+@media (min-width: 1070px) {
+  nav, footer, .site-content {
+    transition: 1.5s;
   }
-} */
+
+  .slide-in {
+    border-left: 2px solid var(--spotify-grey-solid);
+  }
+
+  .shown {
+    transform: translateX(calc(50vw - 537px));
+    transition: 1.5s;
+  }
+
+  /* after slide-in shows */
+  .App:has(.shown) > :where(nav, footer) {
+    transform: translateX(calc(185px - 50%));
+  }
+
+  .App:has(.shown) > .site-content {
+    transform: translateX(185px);
+  }
+
+  .App:has(.shown) > nav .picked-art-tab {
+    display: none;
+  }
+}
