@@ -168,7 +168,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   
   return (
     <div className='search-result'>
-      <img className='result-image' alt={imgUrl ? name : ""} src={imgUrl || "/noImage.png"} loading='lazy'></img>
+      <img className='result-image' alt={imgUrl ? name : ""} src={imgUrl || "/images/noImage.png"} loading='lazy'></img>
       <div className='result-info-container'>
         <span className='name'>{"Name: " + name}</span>
         {type !== "playlist"  &&  <button onClick={artistFetching}>{"See " + (type === "artist" ? "albums" : "artists")}</button>}
@@ -287,7 +287,7 @@ function Placeholder() {
   return (
     <div className='placeholder'>
       <h2>No results found</h2>
-      <img src="/notFound.png" alt="results not found" />
+      <img src="/images/notFound.png" alt="results not found" />
       <span>Try changing filters and search text</span>
     </div>
   )
@@ -465,7 +465,7 @@ function App() {
       <div className="App">
         <nav>
           <div className='picked-art-tab-container'>
-            <button className='picked-art-tab' onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}><img src="/sideBar.png" alt='side bar'></img></button>
+            <button className='picked-art-tab' onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}><img src="/images/sideBar.png" alt='side bar'></img></button>
           </div>
           <div className='filters-slider-container'>
             <ul className='filters-list'>
@@ -481,7 +481,7 @@ function App() {
             </ul>
           </div>
           <div className='pop-up-button-container'>
-            <button className='pop-up-button' onClick={() => localStorage.clear()}><img src="/cloudDataDelete.png" alt='info'></img></button>
+            <button className='pop-up-button' onClick={() => localStorage.clear()}><img src="/images/cloudDataDelete.png" alt='info'></img></button>
           </div>
         </nav>
         <SlideIn 
@@ -524,7 +524,7 @@ function App() {
         <footer>
           <div className='prev-page-button-container'>
             <button className={'prev-page-button' + (prevPage ? '' : " disabled")} disabled={prevPage === null} onClick={() => searchDisplayData(prevPage)}>
-              <img src="/prevPage.png" alt='prev page'/>
+              <img src="/images/prevPage.png" alt='prev page'/>
             </button>
           </div>
           <div className='credits-container'>
@@ -536,7 +536,7 @@ function App() {
           </div>
           <div className='next-page-button-container'>
             <button className={'next-page-button' + (nextPage ? '' : " disabled")} disabled={nextPage === null} onClick={() => searchDisplayData(nextPage)}>
-              <img src="/nextPage.png" alt='next page'/>
+              <img src="/images/nextPage.png" alt='next page'/>
             </button>
           </div>
         </footer>
@@ -611,7 +611,7 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
     <div className='slide-in'>
       <div className='slide-in-header'>
         <div className='close-slide-in-container'>
-          <button className='close-slide-in' onClick={(e) => e.target.closest(".slide-in").classList.remove("shown")}><img src="/close.png" alt='close'></img></button>
+          <button className='close-slide-in' onClick={(e) => e.target.closest(".slide-in").classList.remove("shown")}><img src="/images/close.png" alt='close'></img></button>
         </div>
         <div className='note-container'>
           <span className='note'>Only up to 5 choices can be selected including genres, artists and tracks.</span>
@@ -642,33 +642,4 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
       </div>
     </div>
 );
-}
-
-
-function PopUp() {
-  return (
-    <div className='pop-up'>
-      <div className='grayed-background'>
-        <div className='important-notice'>
-          <div className='log-out-container'>
-            <button className='default-button'>Log out</button>
-          </div>
-          <div className='close-slide-in-container'>
-            <button className='close-slide-in' onClick={(e) => e.target.closest(".pop-up").classList.remove("shown")}><img src="/close.png" alt='close'></img></button>
-          </div>
-          <div className='data-storage-notice'>
-            <span>
-              Bla bla bla.
-            </span>
-          </div>
-          <div className='client-id-notice'>
-            <span>
-              Ble ble ble.
-            </span>
-          </div>
-          <a>Guide on how to get Spotify Client Id</a>
-        </div>
-      </div>
-    </div>
-  );
 }
