@@ -55,7 +55,7 @@ function AddButton({idForTracks, artistId, type, pickedArt, setPickedArt}) {
   return (
     <div className='result-button-container'>
       <button className='result-button' onClick={addArt}>
-        <img src='/add.png' alt='add' loading='lazy'/>
+        <img src={process.env.PUBLIC_URL + '/images/add.png'} alt='add' loading='lazy'/>
       </button>
     </div>
   );
@@ -76,7 +76,7 @@ function ThrashButton({pickedArt, setPickedArt}) {
   return (
     <div className='result-button-container'>
       <button className='result-button' onClick={removeArt}>
-        <img src='/thrash.png' alt='thrash' loading='lazy'/>
+        <img src={process.env.PUBLIC_URL + '/images/thrash.png'} alt='thrash' loading='lazy'/>
       </button>
     </div>
   );
@@ -168,7 +168,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   
   return (
     <div className='search-result'>
-      <img className='result-image' alt={imgUrl ? name : ""} src={imgUrl || "/images/noImage.png"} loading='lazy'></img>
+      <img className='result-image' alt={imgUrl ? name : ""} src={imgUrl || (process.env.PUBLIC_URL + "/images/noImage.png")} loading='lazy'></img>
       <div className='result-info-container'>
         <span className='name'>{"Name: " + name}</span>
         {type !== "playlist"  &&  <button onClick={artistFetching}>{"See " + (type === "artist" ? "albums" : "artists")}</button>}
@@ -287,7 +287,7 @@ function Placeholder() {
   return (
     <div className='placeholder'>
       <h2>No results found</h2>
-      <img src="/images/notFound.png" alt="results not found" />
+      <img src={process.env.PUBLIC_URL + "/images/notFound.png"} alt="results not found" />
       <span>Try changing filters and search text</span>
     </div>
   )
@@ -296,7 +296,7 @@ function Placeholder() {
 
 function App() {
   const CLIENT_ID = "eae286ae2c30452f876d62116733da2a";
-  const REDIRECT_URI = "http://localhost:3000";
+  let REDIRECT_URI = window.location.origin;
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
   const RESPONSE_TYPE = "token";
   
@@ -465,7 +465,9 @@ function App() {
       <div className="App">
         <nav>
           <div className='picked-art-tab-container'>
-            <button className='picked-art-tab' onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}><img src="/images/sideBar.png" alt='side bar'></img></button>
+            <button className='picked-art-tab' onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}>
+              <img src={process.env.PUBLIC_URL + "/images/sideBar.png"} alt='side bar'/>
+            </button>
           </div>
           <div className='filters-slider-container'>
             <ul className='filters-list'>
@@ -481,7 +483,9 @@ function App() {
             </ul>
           </div>
           <div className='pop-up-button-container'>
-            <button className='pop-up-button' onClick={() => localStorage.clear()}><img src="/images/cloudDataDelete.png" alt='info'></img></button>
+            <button className='pop-up-button' onClick={() => localStorage.clear()}>
+              <img src={process.env.PUBLIC_URL + "/images/cloudDataDelete.png"} alt='info'/>
+            </button>
           </div>
         </nav>
         <SlideIn 
@@ -524,7 +528,7 @@ function App() {
         <footer>
           <div className='prev-page-button-container'>
             <button className={'prev-page-button' + (prevPage ? '' : " disabled")} disabled={prevPage === null} onClick={() => searchDisplayData(prevPage)}>
-              <img src="/images/prevPage.png" alt='prev page'/>
+              <img src={process.env.PUBLIC_URL + "/images/prevPage.png"} alt='prev page'/>
             </button>
           </div>
           <div className='credits-container'>
@@ -536,7 +540,7 @@ function App() {
           </div>
           <div className='next-page-button-container'>
             <button className={'next-page-button' + (nextPage ? '' : " disabled")} disabled={nextPage === null} onClick={() => searchDisplayData(nextPage)}>
-              <img src="/images/nextPage.png" alt='next page'/>
+              <img src={process.env.PUBLIC_URL + "/images/nextPage.png"} alt='next page'/>
             </button>
           </div>
         </footer>
@@ -611,7 +615,9 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
     <div className='slide-in'>
       <div className='slide-in-header'>
         <div className='close-slide-in-container'>
-          <button className='close-slide-in' onClick={(e) => e.target.closest(".slide-in").classList.remove("shown")}><img src="/images/close.png" alt='close'></img></button>
+          <button className='close-slide-in' onClick={(e) => e.target.closest(".slide-in").classList.remove("shown")}>
+            <img src={process.env.PUBLIC_URL + "/images/close.png"} alt='close'/>
+          </button>
         </div>
         <div className='note-container'>
           <span className='note'>Only up to 5 choices can be selected including genres, artists and tracks.</span>

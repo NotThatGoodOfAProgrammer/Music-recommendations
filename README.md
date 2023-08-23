@@ -3,7 +3,6 @@
 Built on Spotify API
 
 ## Still in build
-<!-- yeah for now I copied my previous README file and modified it to match this project -->
 
 To do:
 1. Cleaning code
@@ -28,11 +27,7 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 4. Git commands and terminal usage in general
 5. CSS pseudo-classes
 
-<!-- ## Usability:
-Othar than finalizing payment and "download" of the menu being self-promotion
-and not matching their description everything else should work as expected.
-All data is being stored as Local Storage so if you want to get rid of it
-[here](https://www.leadshook.com/help/how-to-clear-local-storage-in-google-chrome-browser/) is a quick tutorial. -->
+<!-- ## Usability: -->
 
 ## Credits:
 Color palette from Spotify<br>
