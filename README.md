@@ -8,13 +8,12 @@ Built on Spotify API
 To do:
 1. Cleaning code
 2. Finishing this README file
-3. Deploying App on GitHub Pages
-4. *Maybe* Changing window.alert() to  custom notification box
-5. *Maybe* Include guide on how to use the app either on App itself or in README
+3. *Maybe* Changing window.alert() to  custom notification box
+4. *Maybe* Include guide on how to use the app either on App itself or in README
 
 In random order
 
-<!-- ## Link: here put link to the App  -->
+## Link: https://NotThatGoodOfAProgrammer.github.io/Music-recommendations
 
 ## Description:
 Main purpose of this project was to learn React, fetching from APIs and how to use Git and GitHub.
