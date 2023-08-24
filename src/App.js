@@ -508,10 +508,10 @@ function App() {
         <div className='site-content'>
           <div className='user-contribution'>
             <div className='default-button-container'>
-              <a className='default-button' href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Get a Token</a>
+              <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Get a Token</a>
             </div>
             <div className='default-button-container'>
-              <button className='default-button' onClick={resetFilters}>Reset Filters</button>
+              <button onClick={resetFilters}>Reset Filters</button>
             </div>
             <div className='search-container'>
               <form className='search-form' onSubmit={e => searchDisplayData(getUrlFromClient(e))}>
@@ -637,7 +637,7 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
       <div className='user-contribution'>
         <div className='add-genres'>
           <div className='default-button-container'>
-            <button className='default-button'>Add genre</button>
+            <button>Add genre</button>
           </div>
           <div className='fluid-row'>
             <div className='fluid-row-content'>
@@ -646,10 +646,10 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
           </div>
         </div>
         <div className='default-button-container'>
-          <button className='default-button' onClick={seeResults}>See results</button>
+          <button onClick={seeResults}>See results</button>
         </div>
         <div className='default-button-container'>
-          <button className='default-button' onClick={resetProgress}>Reset progress</button>
+          <button onClick={resetProgress}>Reset progress</button>
         </div>
       </div>
       <div className='picked-art-container'>
@@ -658,5 +658,5 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
         </div>
       </div>
     </div>
-);
+  );
 }
