@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useEffect, useState, useRef } from "react"
 
-export const TokenContext = React.createContext();
+export const TokenContext = React.createContext("default");
 
 function errorHandling(response) {
   if (response.status === 400) {
@@ -316,18 +316,12 @@ function App() {
     let tmpToken = window.localStorage.getItem("token");
 
     if (!tmpToken && hash) {
-      console.log(hash)
-      console.log(hash.substring(1))
-      console.log(hash.substring(1).split("&"))
-      console.log(hash.substring(1).split("&").find(elem => elem.startsWith("access_token")))
-      console.log(hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("="))
-      console.log(hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1])
       const tmpToken = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
 
       window.location.hash = "";
       window.localStorage.setItem("token", tmpToken);
     }
-
+    console.log(tmpToken);
     setToken(tmpToken);
 
   }, [])
