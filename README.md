@@ -7,8 +7,9 @@ Built on Spotify API
 To do:
 1. Cleaning code
 2. Finishing this README file
-3. *Maybe* Changing window.alert() to  custom notification box
-4. *Maybe* Include guide on how to use the app either on App itself or in README
+3. Checking google lighthouse for possible improvements
+4. *Maybe* Changing window.alert() to  custom notification box
+5. *Maybe* Include guide on how to use the app either on App itself or in README
 
 In random order
 

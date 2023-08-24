@@ -1,10 +1,9 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "Music recommendations",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "logo.ico",
+      "sizes": "256x256",
       "type": "image/x-icon"
     },
     {
@@ -20,6 +19,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#000000",
+  "description": "Makes it easier to find recommendations to specific albums/artists/genres using spotify API"
 }
