@@ -316,7 +316,7 @@ function App() {
     let tmpToken = window.localStorage.getItem("token");
 
     if (!tmpToken && hash) {
-      const tmpToken = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
+      tmpToken = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
 
       window.location.hash = "";
       window.localStorage.setItem("token", tmpToken);
