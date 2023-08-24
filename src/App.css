@@ -20,7 +20,7 @@ body {
   display: none;
 }
 
-.disabled {
+button:disabled {
   opacity: 0.6;
 }
 
@@ -79,10 +79,13 @@ nav {
 }
 
 .picked-art-tab-container, .pop-up-button-container, .picked-art-tab, .pop-up-button,
-.prev-page-button-container, .next-page-button-container, .prev-page-button, .next-page-button,
-.close-slide-in {
+.change-button-container, .change-button, .close-slide-in {
   aspect-ratio: 1 / 1;
   height: 100%;
+}
+
+.picked-art-tab-container {
+  position: relative;
 }
 
 .picked-art-tab img {
@@ -375,6 +378,35 @@ footer {
 .placeholder span {
   display: block;
   margin: 10px 0;
+}
+
+.notification {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  background-color: var(--spotify-sand-solid);
+  border: 1px solid var(--spotify-black-solid);
+  border-radius: 6px;
+  padding: 8px 10px;
+  bottom: -60%;
+  right: -40%;
+  transition: opacity 1s, visibility 1s;
+}
+
+.notification::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 10px;
+  margin-left: -5px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent var(--spotify-sand-solid) transparent;
+}
+
+.shown-notification {
+  visibility: visible;
+  opacity: 1;
 }
 
 

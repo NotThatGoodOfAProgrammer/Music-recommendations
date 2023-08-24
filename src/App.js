@@ -49,6 +49,9 @@ function AddButton({idForTracks, artistId, type, pickedArt, setPickedArt}) {
     pickedData.external_urls.spotify = spotifyHref;
     
     if (pickedArt.every(art => art.external_urls.spotify !== spotifyHref)) setPickedArt([...pickedArt, pickedData]);
+
+    document.getElementsByClassName("notification")[0].classList.add("shown-notification");
+    setTimeout(() => document.getElementsByClassName("notification")[0].classList.remove("shown-notification"), 3000)
   }
 
 
@@ -296,9 +299,10 @@ function Placeholder() {
 
 function App() {
   const CLIENT_ID = "eae286ae2c30452f876d62116733da2a";
-  const REDIRECT_URI = "https://notthatgoodofaprogrammer.github.io/Music-recommendations";
+  const REDIRECT_URI = "https://NotThatGoodOfAProgrammer.github.io/Music-recommendations";
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
   const RESPONSE_TYPE = "token";
+  const perPage = 20;
   
   const [token, setToken] = useState("");
   const searchInput = useRef();
@@ -458,7 +462,7 @@ function App() {
     Array.from(hiddenGenres).forEach(genre => genre.classList.remove("hidden"));
   }
 
-
+  
   return (
     <TokenContext.Provider value={token}>
       <div className="App">
@@ -467,6 +471,9 @@ function App() {
             <button className='picked-art-tab' onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}>
               <img src={process.env.PUBLIC_URL + "/images/sideBar.png"} alt='side bar'/>
             </button>
+            <div className='notification'>
+              <span>Added</span>
+            </div>
           </div>
           <div className='filters-slider-container'>
             <ul className='filters-list'>
@@ -525,8 +532,8 @@ function App() {
           </div>
         </div>
         <footer>
-          <div className='prev-page-button-container'>
-            <button className={'prev-page-button' + (prevPage ? '' : " disabled")} disabled={prevPage === null} onClick={() => searchDisplayData(prevPage)}>
+          <div className='change-button-container'>
+            <button className='change-button' disabled={! prevPage} onClick={() => searchDisplayData(prevPage)}>
               <img src={process.env.PUBLIC_URL + "/images/prevPage.png"} alt='prev page'/>
             </button>
           </div>
@@ -537,8 +544,13 @@ function App() {
               <a href='https://github.com/NotThatGoodOfAProgrammer' target="_blank">Github</a>
             </label>
           </div>
-          <div className='next-page-button-container'>
-            <button className={'next-page-button' + (nextPage ? '' : " disabled")} disabled={nextPage === null} onClick={() => searchDisplayData(nextPage)}>
+          <div className='change-button-container'>
+            <button
+              className='change-button'
+              disabled={nextPage === null  || // Spotify allows to set offset larger than number of elements. This is in order to prevent empty pages being shown
+                ! (albumsData.length === perPage  ||  artistsData.length === perPage  ||  playlistsData.length === perPage  ||  tracksData.length === perPage)}
+              onClick={() => searchDisplayData(nextPage)
+            }>
               <img src={process.env.PUBLIC_URL + "/images/nextPage.png"} alt='next page'/>
             </button>
           </div>
@@ -624,7 +636,7 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
       </div>
       <div className='user-contribution'>
         <div className='add-genres'>
-            <div className='default-button-container'>
+          <div className='default-button-container'>
             <button className='default-button'>Add genre</button>
           </div>
           <div className='fluid-row'>
