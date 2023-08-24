@@ -320,9 +320,7 @@ function App() {
 
       window.location.hash = "";
       window.localStorage.setItem("token", tmpToken);
-      console.log(1, tmpToken);
     }
-    console.log(2, tmpToken);
     setToken(tmpToken);
 
   }, [])
