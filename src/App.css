@@ -244,6 +244,7 @@ nav {
 
 .result-image {
   height: 100%;
+  max-width: 150px;
 }
 
 .result-info-container {
