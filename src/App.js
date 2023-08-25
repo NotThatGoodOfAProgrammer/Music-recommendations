@@ -299,7 +299,7 @@ function Placeholder() {
 
 function App() {
   const CLIENT_ID = "eae286ae2c30452f876d62116733da2a";
-  const REDIRECT_URI = "https://NotThatGoodOfAProgrammer.github.io/Music-recommendations";
+  const REDIRECT_URI = "https://notthatgoodofaprogrammer.github.io/Music-recommendations";
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
   const RESPONSE_TYPE = "token";
   const perPage = 20;

@@ -20,5 +20,5 @@
   "start_url": ".",
   "display": "standalone",
   "background_color": "#000000",
-  "description": "Makes it easier to find recommendations to specific albums/artists/genres using spotify API"
+  "description": "Makes it easier to find recommendations to specific albums/artists/genres using Spotify API"
 }

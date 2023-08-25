@@ -309,8 +309,8 @@ footer {
   background-color: var(--spotify-black-solid);
   position: fixed;
   left: 0;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   transform: translateX(-100%);
   transition: 1s;
   z-index: 4;
@@ -358,7 +358,7 @@ footer {
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--spotify-grey-solid);
-  height: 370px;
+  max-height: 370px;
   overflow-y: auto;
   border: var(--border-style);
   z-index: 1;
