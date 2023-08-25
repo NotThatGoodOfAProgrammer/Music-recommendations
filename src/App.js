@@ -319,7 +319,7 @@ function App() {
     const hash = window.location.hash;
     let tmpToken = window.localStorage.getItem("token");
 
-    if (!tmpToken && hash) {
+    if (hash) {
       tmpToken = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
 
       window.location.hash = "";
@@ -508,10 +508,10 @@ function App() {
         <div className='site-content'>
           <div className='user-contribution'>
             <div className='default-button-container'>
-              <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Get a Token</a>
+              <a href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Get token</a>
             </div>
             <div className='default-button-container'>
-              <button onClick={resetFilters}>Reset Filters</button>
+              <button onClick={resetFilters}>Reset filters</button>
             </div>
             <div className='search-container'>
               <form className='search-form' onSubmit={e => searchDisplayData(getUrlFromClient(e))}>
