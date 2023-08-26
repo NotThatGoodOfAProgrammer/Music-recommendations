@@ -46,6 +46,10 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 
 \* *only up to 5 results and genres combined can be choosen at once*
 
+## Possible issues
+
+* releases from past 2 weeks(tag:new) seems not to work with genres [read more](https://community.spotify.com/t5/Spotify-for-Developers/API-No-way-to-search-tag-new-with-genre/td-p/5483721)
+
 ## Credits:
 Color palette from Spotify<br>
 Images and icons from https://www.freepik.com/<br>

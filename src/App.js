@@ -5,7 +5,8 @@ export const TokenContext = React.createContext();
 
 function errorHandling(response) {
   if (response.status === 400) {
-    window.alert("Make sure to select type and either type search term or choose genre")
+    window.alert("Make sure to select type and either type search term or choose genre");
+
   } else if (response.status === 401) {
     localStorage.removeItem("token");
     window.alert("Please get a new token");
@@ -22,12 +23,12 @@ function errorHandling(response) {
 function addTypesToUrl(url, typeParameter) {
   if (url === null  ||  url === undefined) return url;
   
-  const typeIndexStart = url.indexOf("&type", url.indexOf("?q="));
-  if (typeIndexStart !== -1){
-    const typeIndexEnd = url.indexOf("&", typeIndexStart +1);
+  const typeStart = url.indexOf("&type", url.indexOf("?q="));
+  if (typeStart !== -1){
+    const typeEnd = url.indexOf("&", typeStart +1);
 
-    let newUrl = url.slice(0, typeIndexStart) + typeParameter;
-    newUrl += (typeIndexEnd !== -1 ? url.slice(typeIndexEnd) : "");
+    let newUrl = url.slice(0, typeStart) + typeParameter;
+    newUrl += (typeEnd !== -1 ? url.slice(typeEnd) : "");
     
     return newUrl;
 
@@ -35,20 +36,21 @@ function addTypesToUrl(url, typeParameter) {
 }
 
 
-function AddButton({idForTracks, artistId, type, pickedArt, setPickedArt}) {
+function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
   function addArt(e) {
     const pickedNode = e.target.closest(".search-result");
     
-    
+    // processing data to make it same as from Spotify whilst including only neccesary data
     let pickedData = {type: type, id: idForTracks, artists: artistId};
 
     pickedData.images = [{url: pickedNode.getElementsByClassName("result-image")[0].src}];
-    pickedData.name = pickedNode.getElementsByClassName("name")[0].innerText.slice(6);
-    let spotifyHref = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href
+    pickedData.name = pickedNode.getElementsByClassName("name")[0].innerText.slice(6); //slicing "Name: "
+
+    let spotifyHref = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href;
     pickedData.external_urls = {};
     pickedData.external_urls.spotify = spotifyHref;
     
-    if (pickedArt.every(art => art.external_urls.spotify !== spotifyHref)) setPickedArt([...pickedArt, pickedData]);
+    if (pickedMusic.every(art => art.external_urls.spotify !== spotifyHref)) setPickedMusic([...pickedMusic, pickedData]); //avoiding duplicates
 
     document.getElementsByClassName("notification")[0].classList.add("shown-notification");
     setTimeout(() => document.getElementsByClassName("notification")[0].classList.remove("shown-notification"), 3000)
@@ -65,12 +67,12 @@ function AddButton({idForTracks, artistId, type, pickedArt, setPickedArt}) {
 }
 
 
-function ThrashButton({pickedArt, setPickedArt}) {
+function ThrashButton({pickedMusic, setPickedMusic}) {
   function removeArt(e) {
     const pickedNode = e.target.closest(".search-result");
-    const toDelete = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href;
+    const toDelete = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href; //spotify links are unique (no duplicates are allowed)
 
-    setPickedArt(pickedArt.filter((elem) => {
+    setPickedMusic(pickedMusic.filter((elem) => {
       return elem.external_urls.spotify !== toDelete;
     }))
   }
@@ -88,11 +90,11 @@ function ThrashButton({pickedArt, setPickedArt}) {
 
 function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
    setAlbumsData, setArtistsData, setPlaylistsData, setTracksData,
-  setPrevPage, setNextPage, pickedArt, setPickedArt, isPicked}) {
+  setPrevPage, setNextPage, pickedMusic, setPickedMusic, isPicked}) {
   
   const token = React.useContext(TokenContext);
 
-  let imgUrl = '';
+  let imgUrl = ''; //processing image data
   if (img !== undefined) {
     try {
       imgUrl = img[0].url;
@@ -103,7 +105,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   
   let id = [];
   if (Array.isArray(artistId)) artistId.forEach(artist => id = [...id, artist.id]);
-  else id = artistId;
+  else id = [artistId];
 
 
   async function artistFetching() {
@@ -124,7 +126,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
       setPlaylistsData([]);
       setTracksData([]);
       
-      const typeParameter = "&type=" + data.items ? "album" : "artist";
+      const typeParameter = "&type=" + data.artists ? "artist" : "album";
       setPrevPage(addTypesToUrl(data.previous, typeParameter));
       setNextPage(addTypesToUrl(data.next, typeParameter));
     
@@ -147,11 +149,11 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
       let data = await response.json();
 
       let playlistTracks = [];
-      if (type === "album") {
+      if (type === "album") { //tracks of album by default don't have image provided
         data.items.forEach(track => track.images = img);
 
       } else if (type === "playlist") {
-        data.items.forEach(item => playlistTracks = [...playlistTracks, item.track])
+        data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
       }
 
       setArtistsData([]);
@@ -171,7 +173,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   
   return (
     <div className='search-result'>
-      <img className='result-image' alt={imgUrl ? name : ""} src={imgUrl || (process.env.PUBLIC_URL + "/images/noImage.png")} loading='lazy'></img>
+      <img className='result-image' alt={imgUrl && name} src={imgUrl || (process.env.PUBLIC_URL + "/images/noImage.png")} loading='lazy'/>
       <div className='result-info-container'>
         <span className='name'>{"Name: " + name}</span>
         {type !== "playlist"  &&  <button onClick={artistFetching}>{"See " + (type === "artist" ? "albums" : "artists")}</button>}
@@ -181,15 +183,15 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
         {(type === "album"  ||  type === "artist") &&
         (isPicked ?
         <ThrashButton
-          pickedArt={pickedArt}
-          setPickedArt={setPickedArt}/>
+          pickedMusic={pickedMusic}
+          setPickedMusic={setPickedMusic}/>
         :
         <AddButton
           idForTracks={idForTracks}
           artistId={artistId}
           type={type}
-          pickedArt={pickedArt}
-          setPickedArt={setPickedArt}/>
+          pickedMusic={pickedMusic}
+          setPickedMusic={setPickedMusic}/>
         )}
     </div>
   );
@@ -209,7 +211,7 @@ function FilterOptionCheckbox({name}) {
 
 
 function TypesFilterButton() {
-  const types = ["album", "artist", "playlist", "track"]
+  const types = ["album", "artist", "playlist", "track"];
 
   return (
     <div className='filter-button-container' id='type-options'>
@@ -227,7 +229,7 @@ function TypesFilterButton() {
 function DateFilterButton() {
   return (
     <div className='filter-button-container'>
-      <button className='filter-button'>Release Date</button>
+      <button className='filter-button'>Release date</button>
       <div className='filter-options' id='date-options'>
         <ul>
           <FilterOptionCheckbox name='Past two weeks only' value='new'/>
@@ -266,7 +268,7 @@ function GenresList(genres) {
     let elements = e.target.parentElement.getElementsByTagName("li");
     
     for (let i=0; i<elements.length; i++) {
-      if (genres.genres[i].toLowerCase().indexOf(text) > -1) {
+      if (genres.genres[i].includes(text)) {
         elements[i].classList.remove("hidden");
       } else {
         elements[i].classList.add("hidden");
@@ -279,7 +281,7 @@ function GenresList(genres) {
     <>
       <input className='genres-search-bar' onChange={searchGenres} type="text"></input>
       <ul>
-        {genres.genres.length ? genres.genres.map(genre => <FilterOptionCheckbox name={genre} key={genre}/>) : <div>Loading</div>}
+        {genres.genres.length ? genres.genres.map(genre => <FilterOptionCheckbox name={genre} key={genre}/>) : <div>Get token to load genres</div>}
       </ul>
     </>
   );
@@ -299,7 +301,7 @@ function Placeholder() {
 
 function App() {
   const CLIENT_ID = "eae286ae2c30452f876d62116733da2a";
-  const REDIRECT_URI = "https://notthatgoodofaprogrammer.github.io/Music-recommendations";
+  const REDIRECT_URI = "http://localhost:3000"//"https://notthatgoodofaprogrammer.github.io/Music-recommendations";
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
   const RESPONSE_TYPE = "token";
   const perPage = 20;
@@ -313,25 +315,26 @@ function App() {
   const [genres, setGenres] = useState([]);
   const [prevPage, setPrevPage] = useState("");
   const [nextPage, setNextPage] = useState("");
-  const [pickedArt, setPickedArt] = useState([]);
+  const [pickedMusic, setPickedMusic] = useState([]);
   
   useEffect(() => {
     const hash = window.location.hash;
-    let tmpToken = window.localStorage.getItem("token");
+
+    let tokenVariable = window.localStorage.getItem("token");
 
     if (hash) {
-      tmpToken = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
+      tokenVariable = hash.substring(1).split("&").find(elem => elem.startsWith("access_token")).split("=")[1];
 
       window.location.hash = "";
-      window.localStorage.setItem("token", tmpToken);
+      window.localStorage.setItem("token", tokenVariable);
     }
-    setToken(tmpToken);
 
+    setToken(tokenVariable);
   }, [])
 
   
   useEffect(() => {
-    const fetchGenres =  async() => {
+    const fetchGenres = async() => {
       if (token) {
         let response = await fetch("https://api.spotify.com/v1/recommendations/available-genre-seeds", {
           headers: {
@@ -341,6 +344,7 @@ function App() {
         if (response.ok) {
           let data = await response.json();
           setGenres(data.genres);
+          
         } else errorHandling(response);
       }
     }
@@ -357,41 +361,60 @@ function App() {
     const dateOptions = document.getElementById("date-options");
     const genreOptions = document.getElementById("genre-options");
 
-    const tagParameter = dateOptions.querySelector("input[type=checkbox]:checked") ? " tag:new" : "";
-
-    const yearInputs = dateOptions.querySelectorAll("input[type=text]");
-    const regex = /1|2\d\d\d/;
-    const startDate = yearInputs[0].value;
-    const endDate = yearInputs[1].value;
-    const yearParameter = (regex.test(startDate)  &&  regex.test(endDate)) ? " year:" + startDate + '-' + endDate : "";
-
-    const genreCheckboxes = genreOptions.querySelectorAll("input[type=checkbox]:checked");
-    let genreParameter = " ";
-    Array.from(genreCheckboxes).forEach(checkbox => {
-      genreParameter += (" genre:\"" + checkbox.parentElement.innerText + "\"");
-    })
 
     const typeCheckboxes = typesOptions.querySelectorAll("input[type=checkbox]:checked");
     let types = [];
     Array.from(typeCheckboxes).forEach(checkbox => {
       types = [...types, (checkbox.parentElement.innerText || checkbox.parentElement.textContent)];
     })
-    const typeParameter = "&type=" + types;
-    
-    const url = "https://api.spotify.com/v1/search?q=" + searchInput.current.value + tagParameter + yearParameter + genreParameter + typeParameter;
 
+    const typeParameter = "&type=" + types;
+
+
+    const isTagChecked = dateOptions.querySelector("input[type=checkbox]:checked");
+    const tagParameter = (isTagChecked  &&  (typeParameter === "&type=album")) ? " tag:new" : "";
+
+
+    let yearParameter = '';
+    if (! types.includes("playlist")) {
+      const yearInputs = dateOptions.querySelectorAll("input[type=text]");
+
+      let startDate = Number(yearInputs[0].value);
+      let endDate = Number(yearInputs[1].value);
+
+      if (startDate || endDate) { // checking if inputs weren't empty or only made with 0s
+        if (startDate <= endDate) {
+          yearParameter =  " year:" + Math.max(startDate, 1000) + '-' + Math.min(endDate, 2999);
+
+        } else {
+          window.alert("Swap order of inputs in \"Release date\" filter to apply them"); // change message
+        }
+      }
+    }
+
+
+    const genreCheckboxes = genreOptions.querySelectorAll("input[type=checkbox]:checked");
+    let genreParameter = "";
+
+    Array.from(genreCheckboxes).forEach(checkbox => {
+      genreParameter += (" genre:\"" + (checkbox.parentElement.innerText  ||  checkbox.parentElement.textContent) + "\"");
+    })
+    
+
+    const url = "https://api.spotify.com/v1/search?q=" + searchInput.current.value
+                    + tagParameter + yearParameter + genreParameter + typeParameter;
+    
     return url;
   }
 
 
   async function searchDisplayData(url) {
-    
-    const typeIndexStart = url.indexOf("&type", url.indexOf("?q="));
-    const typeIndexEnd = url.indexOf("&", typeIndexStart +1);
+    const typeStart = url.indexOf("&type", url.indexOf("?q=")); //mabe we can replace this
+    const typeEnd = url.indexOf("&", typeStart +1);
     
     let typeParameter;
-    if (typeIndexEnd !== -1) typeParameter = url.slice(typeIndexStart, typeIndexEnd);
-    else typeParameter = url.slice(typeIndexStart);
+    if (typeEnd !== -1) typeParameter = url.slice(typeStart, typeEnd);
+    else typeParameter = url.slice(typeStart);
   
     const response = await fetch(url, {
       headers: {
@@ -404,7 +427,7 @@ function App() {
       setAlbumsData(data.albums ? data.albums.items : []);
       setArtistsData(data.artists ? data.artists.items : []);
       setPlaylistsData(data.playlists ? data.playlists.items : []);
-      if (data.items) {
+      if (data.items) { // catch processing playlists items
         let playlistTracks = [];
         data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
 
@@ -412,7 +435,7 @@ function App() {
         setPrevPage(data.previous);
         setNextPage(data.next);
 
-      } else {
+      } else { // default behaviour
         setTracksData(data.tracks ? data.tracks.items : []);
 
         const pageData = data.albums || data.artists || data.playlists || data.tracks;
@@ -440,8 +463,8 @@ function App() {
         setTracksData={setTracksData}
         setPrevPage={setPrevPage}
         setNextPage={setNextPage}
-        pickedArt={pickedArt}
-        setPickedArt={setPickedArt}
+        pickedMusic={pickedMusic}
+        setPickedMusic={setPickedMusic}
         isPicked={isPicked}
         key={'' + elem.id + elem.external_urls.spotify + idx++}
       />
@@ -502,8 +525,8 @@ function App() {
           setTracksData={setTracksData}
           setPrevPage={setPrevPage}
           setNextPage={setNextPage}
-          pickedArt={pickedArt}
-          setPickedArt={setPickedArt}
+          pickedMusic={pickedMusic}
+          setPickedMusic={setPickedMusic}
           renderPicked={renderDisplayData}/>
         <div className='site-content'>
           <div className='user-contribution'>
@@ -564,7 +587,7 @@ export default App;
 
 
 function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTracksData,
-  setPrevPage, setNextPage, pickedArt, setPickedArt, renderPicked}) {
+  setPrevPage, setNextPage, pickedMusic, setPickedMusic, renderPicked}) {
   
     const token = React.useContext(TokenContext);
 
@@ -581,7 +604,7 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
       
       let albums = [];
       let artists = [];
-      pickedArt.forEach(art => {
+      pickedMusic.forEach(art => {
         if (art.type === "album") albums = [...albums, art.id];
         else if (art.type === "artist") artists = [...artists, art.id];
       })
@@ -618,7 +641,7 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
     const checkboxes = document.getElementsByClassName("fluid-row-content")[0].querySelectorAll("input[type=checkbox]:checked");
     Array.from(checkboxes).forEach(checkbox => checkbox.checked = false);
 
-    setPickedArt([]);
+    setPickedMusic([]);
   }
 
   
@@ -654,7 +677,7 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
       </div>
       <div className='picked-art-container'>
         <div className='picked-art-grid'>
-          {pickedArt.length && renderPicked(pickedArt, true)}
+          {pickedMusic.length && renderPicked(pickedMusic, true)}
         </div>
       </div>
     </div>
