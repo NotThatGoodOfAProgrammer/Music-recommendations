@@ -40,17 +40,17 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
   function addArt(e) {
     const pickedNode = e.target.closest(".search-result");
     
-    // processing data to make it same as from Spotify whilst including only neccesary data
+    // processing data to make it same as from Spotify whilst including only necessary data
     let pickedData = {type: type, id: idForTracks, artists: artistId};
 
     pickedData.images = [{url: pickedNode.getElementsByClassName("result-image")[0].src}];
-    pickedData.name = pickedNode.getElementsByClassName("name")[0].innerText.slice(6); //slicing "Name: "
+    pickedData.name = pickedNode.getElementsByClassName("name")[0].innerText.slice(6); // slicing "Name: "
 
     let spotifyHref = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href;
     pickedData.external_urls = {};
     pickedData.external_urls.spotify = spotifyHref;
     
-    if (pickedMusic.every(art => art.external_urls.spotify !== spotifyHref)) setPickedMusic([...pickedMusic, pickedData]); //avoiding duplicates
+    if (pickedMusic.every(music => music.external_urls.spotify !== spotifyHref)) setPickedMusic([...pickedMusic, pickedData]); // avoiding duplicates
 
     document.getElementsByClassName("notification")[0].classList.add("shown-notification");
     setTimeout(() => document.getElementsByClassName("notification")[0].classList.remove("shown-notification"), 3000)
@@ -70,7 +70,7 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
 function ThrashButton({pickedMusic, setPickedMusic}) {
   function removeArt(e) {
     const pickedNode = e.target.closest(".search-result");
-    const toDelete = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href; //spotify links are unique (no duplicates are allowed)
+    const toDelete = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href; // spotify links are unique (no duplicates are allowed)
 
     setPickedMusic(pickedMusic.filter((elem) => {
       return elem.external_urls.spotify !== toDelete;
@@ -94,7 +94,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   
   const token = React.useContext(TokenContext);
 
-  let imgUrl = ''; //processing image data
+  let imgUrl = ''; // processing image data
   if (img !== undefined) {
     try {
       imgUrl = img[0].url;
@@ -116,7 +116,8 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
     const response = await fetch(url, {
       headers: {
           Authorization: `Bearer ${token}`
-    }})
+      }
+    })
 
     if (response.ok) {
       const data = await response.json();
@@ -144,13 +145,14 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
     const response = await fetch(url, {
       headers: {
           Authorization: `Bearer ${token}`
-    }})
+      }
+    })
 
     if (response.ok) {
       let data = await response.json();
       
       let playlistTracks = [];
-      if (type === "album") { //tracks of album by default don't have image provided
+      if (type === "album") { // tracks of album by default don't have image provided
         data.items.forEach(track => track.images = img);
 
       } else if (type === "playlist") {
@@ -280,7 +282,7 @@ function GenresList(genres) {
 
   return(
     <>
-      <input className='genres-search-bar' onChange={searchGenres} type="text"></input>
+      <input className='genres-search-bar' onChange={searchGenres} type="text"/>
       <ul>
         {genres.genres.length ? genres.genres.map(genre => <FilterOptionCheckbox name={genre} key={genre}/>) : <div>Get token to load genres</div>}
       </ul>
@@ -302,10 +304,10 @@ function Placeholder() {
 
 function App() {
   const CLIENT_ID = "eae286ae2c30452f876d62116733da2a";
-  const REDIRECT_URI = "http://localhost:3000"//"https://notthatgoodofaprogrammer.github.io/Music-recommendations";
+  const REDIRECT_URI = "https://notthatgoodofaprogrammer.github.io/Music-recommendations";
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
   const RESPONSE_TYPE = "token";
-  const perPage = 20;
+  const perPage = 20; // default limit of elements on most API responses
   
   const [token, setToken] = useState("");
   const searchInput = useRef();
@@ -341,7 +343,8 @@ function App() {
         let response = await fetch("https://api.spotify.com/v1/recommendations/available-genre-seeds", {
           headers: {
               Authorization: `Bearer ${token}`
-          }});
+          }
+        });
     
         if (response.ok) {
           let data = await response.json();
@@ -389,7 +392,7 @@ function App() {
           yearParameter =  " year:" + Math.max(startDate, 1000) + '-' + Math.min(endDate, 2999);
 
         } else {
-          window.alert("Swap order of inputs in \"Release date\" filter to apply them"); // change message
+          window.alert("Incorrect year range logic inputted");
         }
       }
     }
@@ -414,7 +417,8 @@ function App() {
     const response = await fetch(url, {
       headers: {
           Authorization: `Bearer ${token}`
-      }})
+      }
+    })
     
     if (response.ok) {
       const data = await response.json();
@@ -430,15 +434,15 @@ function App() {
         setNextPage(addTypesToUrl(pageData.next || null, typeparameter.current));
 
 
-      } else { // etiher artists albums or album tracks or playlist tracks; so there is only one type of data
+      } else { // either artists albums, album tracks or playlist tracks; so there is only one type of data
         let playlistTracks = [];
         // disc_number is unique for album tracks  and  added_by is unique for plalists tracks
-        if (data.items[0].disc_number) { //tracks of album by default don't have image provided
+        if (data.items[0].disc_number) { // tracks from album by default don't have image provided
           const albumImage = {url: document.getElementsByClassName("search-results-grid")[0].getElementsByClassName("result-image")[0].src};
           
           data.items.forEach(track => track.images = albumImage);
 
-        } else if (data.items[0].added_by) { //formatting data
+        } else if (data.items[0].added_by) { // formatting data
           data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
         }
 
@@ -456,7 +460,7 @@ function App() {
 
 
   function renderDisplayData(displayData, isPicked) {
-    let idx = 0; //make sure that keys are unique
+    let idx = 0; // makes sure that keys are unique
     return displayData.map(elem => (
       <ResultTemplate
         type={elem.type}
@@ -498,34 +502,34 @@ function App() {
   return (
     <TokenContext.Provider value={token}>
       <div className="App">
-        <nav>
-          <div className='picked-art-tab-container'>
-            <button className='picked-art-tab' onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}>
+        <div className='filters-bar'>
+          <div className='picked-music-tab-container'>
+            <button className='picked-music-tab'onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}>
               <img src={process.env.PUBLIC_URL + "/images/sideBar.png"} alt='side bar'/>
             </button>
             <div className='notification'>
               <span>Added</span>
             </div>
           </div>
-          <div className='filters-slider-container'>
+          <div className='filters-container'>
             <ul className='filters-list'>
               <li className='filter'>
-                <TypesFilterButton />
+                <TypesFilterButton/>
               </li>
               <li className='filter'>
-                <DateFilterButton />
+                <DateFilterButton/>
               </li>
               <li className='filter'>
                 <GenreFilterButton genres={genres}/>
               </li>
             </ul>
           </div>
-          <div className='pop-up-button-container'>
-            <button className='pop-up-button' onClick={() => localStorage.clear()}>
-              <img src={process.env.PUBLIC_URL + "/images/cloudDataDelete.png"} alt='info'/>
+          <div className='clear-data-button-container'>
+            <button className='clear-data-button' onClick={() => localStorage.clear()}>
+              <img src={process.env.PUBLIC_URL + "/images/cloudDataDelete.png"} alt='clear data'/>
             </button>
           </div>
-        </nav>
+        </div>
         <SlideIn 
           genres={genres}
           setAlbumsData={setAlbumsData}
@@ -536,7 +540,8 @@ function App() {
           setNextPage={setNextPage}
           pickedMusic={pickedMusic}
           setPickedMusic={setPickedMusic}
-          renderPicked={renderDisplayData}/>
+          renderPicked={renderDisplayData}
+        />
         <div className='site-content'>
           <div className='user-contribution'>
             <div className='default-button-container'>
@@ -545,9 +550,9 @@ function App() {
             <div className='default-button-container'>
               <button onClick={resetFilters}>Reset filters</button>
             </div>
-            <div className='search-container'>
+            <div className='search-form-container'>
               <form className='search-form' onSubmit={e => searchDisplayData(getUrlFromClient(e))}>
-                <input className='search-input' type="text" ref={searchInput}></input>
+                <input className='search-input' type="text" ref={searchInput}/>
                 <button className='submit-button' type='submit'>Submit</button>
               </form>
             </div>
@@ -564,8 +569,8 @@ function App() {
           </div>
         </div>
         <footer>
-          <div className='change-button-container'>
-            <button className='change-button' disabled={! prevPage} onClick={() => searchDisplayData(prevPage)}>
+          <div className='change-page-button-container'>
+            <button className='change-page-button' disabled={! prevPage} onClick={() => searchDisplayData(prevPage)}>
               <img src={process.env.PUBLIC_URL + "/images/prevPage.png"} alt='prev page'/>
             </button>
           </div>
@@ -573,16 +578,16 @@ function App() {
             <label>
               Made by: Armatys Konrad
               <br/>
-              <a href='https://github.com/NotThatGoodOfAProgrammer' target="_blank">Github</a>
+              Check me on <a href='https://github.com/NotThatGoodOfAProgrammer' target="_blank" rel='noreferrer'>GitHub</a>
             </label>
           </div>
-          <div className='change-button-container'>
+          <div className='change-page-button-container'>
             <button
-              className='change-button'
-              disabled={nextPage === null  || // Spotify allows to set offset larger than number of elements. This is in order to prevent empty pages being shown
+              className='change-page-button'
+              disabled={nextPage === null  || // Spotify allows setting an offset larger than the number of elements. This is in order to prevent empty pages being shown
                 ! (albumsData.length >= perPage  ||  artistsData.length >= perPage  ||  playlistsData.length >= perPage  ||  tracksData.length >= perPage)}
-              onClick={() => searchDisplayData(nextPage)
-            }>
+              onClick={() => searchDisplayData(nextPage)}
+            >
               <img src={process.env.PUBLIC_URL + "/images/nextPage.png"} alt='next page'/>
             </button>
           </div>
@@ -598,34 +603,38 @@ export default App;
 function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTracksData,
   setPrevPage, setNextPage, pickedMusic, setPickedMusic, renderPicked}) {
   
-    const token = React.useContext(TokenContext);
+  const token = React.useContext(TokenContext);
 
   async function seeResults() {
-    const checkboxes = document.getElementsByClassName("fluid-row-content")[0].querySelectorAll("input[type=checkbox]:checked");
     let genres = [];
+
+    const checkboxes = document.getElementsByClassName("fluid-row-content")[0].querySelectorAll("input[type=checkbox]:checked");
     Array.from(checkboxes).forEach(checkbox => genres = [...genres, checkbox.parentElement.innerText]);
 
-    const pickedSearchResults = document.getElementsByClassName("picked-art-grid")[0].getElementsByClassName("search-result");
+
+    const pickedSearchResults = document.getElementsByClassName("picked-music-grid")[0].getElementsByClassName("search-result");
     
     const itemsCount = genres.length + pickedSearchResults.length;
     if (itemsCount > 0  &&  itemsCount <= 5) {
-      let url = "https://api.spotify.com/v1/recommendations?market=PL";
-      
       let albums = [];
       let artists = [];
-      pickedMusic.forEach(art => {
-        if (art.type === "album") albums = [...albums, art.id];
-        else if (art.type === "artist") artists = [...artists, art.id];
+      pickedMusic.forEach(music => {
+        if (music.type === "album") albums = [...albums, music.id];
+        else if (music.type === "artist") artists = [...artists, music.id];
       })
 
-      url += albums ? "&seed_albums=" + albums : "";
-      url += artists ? "&seed_artists=" + artists : "";
+
+      let url = "https://api.spotify.com/v1/recommendations?market=PL";
+      url += albums.length ? "&seed_albums=" + albums : "";
+      url += artists.length ? "&seed_artists=" + artists : "";
       url += genres.length ? "&seed_genres=" + genres : "";
       
+
       const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`
-        }})
+        }
+      })
 
       if (response.ok) {
         let data = await response.json();
@@ -638,11 +647,12 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
         setPrevPage("");
         setNextPage("");
 
-        document.getElementsByClassName("slide-in")[0].classList.remove("shown");
+
+        document.getElementsByClassName("slide-in")[0].classList.remove("shown"); // show results immediately
 
       } else errorHandling(response);
 
-    } else window.alert("Please choose between 1 and 5 items to get recommendations on.")
+    } else window.alert("Please choose between 1 and 5 items to get recommendations on.");
   }
 
 
@@ -663,11 +673,11 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
           </button>
         </div>
         <div className='note-container'>
-          <span className='note'>Only up to 5 choices can be selected including genres, artists and tracks.</span>
+          <span className='note'>Only up to 5 choices can be selected in total from genres, artists and tracks.</span>
         </div>
       </div>
       <div className='user-contribution'>
-        <div className='add-genres'>
+        <div className='add-genres-container'>
           <div className='default-button-container'>
             <button>Add genre</button>
           </div>
@@ -684,8 +694,8 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
           <button onClick={resetProgress}>Reset progress</button>
         </div>
       </div>
-      <div className='picked-art-container'>
-        <div className='picked-art-grid'>
+      <div className='picked-music-container'>
+        <div className='picked-music-grid'>
           {pickedMusic.length && renderPicked(pickedMusic, true)}
         </div>
       </div>
