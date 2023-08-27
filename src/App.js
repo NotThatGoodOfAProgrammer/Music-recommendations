@@ -90,7 +90,7 @@ function ThrashButton({pickedMusic, setPickedMusic}) {
 
 function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
    setAlbumsData, setArtistsData, setPlaylistsData, setTracksData,
-  setPrevPage, setNextPage, pickedMusic, setPickedMusic, isPicked}) {
+  setPrevPage, setNextPage, pickedMusic, setPickedMusic, typeparameter, isPicked}) {
   
   const token = React.useContext(TokenContext);
 
@@ -126,10 +126,11 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
       setPlaylistsData([]);
       setTracksData([]);
       
-      const typeParameter = "&type=" + data.artists ? "artist" : "album";
-      setPrevPage(addTypesToUrl(data.previous, typeParameter));
-      setNextPage(addTypesToUrl(data.next, typeParameter));
-    
+      typeparameter.current = "&type=" + (data.artists ? "artist" : "album");
+      
+      setPrevPage(data.previous);
+      setNextPage(data.next);
+      
     } else errorHandling(response);
   }
 
@@ -147,7 +148,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
 
     if (response.ok) {
       let data = await response.json();
-
+      
       let playlistTracks = [];
       if (type === "album") { //tracks of album by default don't have image provided
         data.items.forEach(track => track.images = img);
@@ -316,6 +317,7 @@ function App() {
   const [prevPage, setPrevPage] = useState("");
   const [nextPage, setNextPage] = useState("");
   const [pickedMusic, setPickedMusic] = useState([]);
+  const typeparameter = useRef("");
   
   useEffect(() => {
     const hash = window.location.hash;
@@ -368,11 +370,11 @@ function App() {
       types = [...types, (checkbox.parentElement.innerText || checkbox.parentElement.textContent)];
     })
 
-    const typeParameter = "&type=" + types;
+    typeparameter.current = "&type=" + types;
 
 
     const isTagChecked = dateOptions.querySelector("input[type=checkbox]:checked");
-    const tagParameter = (isTagChecked  &&  (typeParameter === "&type=album")) ? " tag:new" : "";
+    const tagParameter = (isTagChecked  &&  (typeparameter.current === "&type=album")) ? " tag:new" : "";
 
 
     let yearParameter = '';
@@ -402,20 +404,13 @@ function App() {
     
 
     const url = "https://api.spotify.com/v1/search?q=" + searchInput.current.value
-                    + tagParameter + yearParameter + genreParameter + typeParameter;
+                    + tagParameter + yearParameter + genreParameter + typeparameter.current;
     
     return url;
   }
 
-
-  async function searchDisplayData(url) {
-    const typeStart = url.indexOf("&type", url.indexOf("?q=")); //mabe we can replace this
-    const typeEnd = url.indexOf("&", typeStart +1);
-    
-    let typeParameter;
-    if (typeEnd !== -1) typeParameter = url.slice(typeStart, typeEnd);
-    else typeParameter = url.slice(typeStart);
   
+  async function searchDisplayData(url) {
     const response = await fetch(url, {
       headers: {
           Authorization: `Bearer ${token}`
@@ -424,38 +419,51 @@ function App() {
     if (response.ok) {
       const data = await response.json();
       
-      setAlbumsData(data.albums ? data.albums.items : []);
-      setArtistsData(data.artists ? data.artists.items : []);
-      setPlaylistsData(data.playlists ? data.playlists.items : []);
-      if (data.items) { // catch processing playlists items
-        let playlistTracks = [];
-        data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
-
-        setTracksData(playlistTracks);
-        setPrevPage(data.previous);
-        setNextPage(data.next);
-
-      } else { // default behaviour
+      if (! data.items) { // default search for items
+        setAlbumsData(data.albums ? data.albums.items : []);
+        setArtistsData(data.artists ? data.artists.items : []);
+        setPlaylistsData(data.playlists ? data.playlists.items : []);
         setTracksData(data.tracks ? data.tracks.items : []);
 
         const pageData = data.albums || data.artists || data.playlists || data.tracks;
-        setPrevPage(addTypesToUrl(pageData.previous || null, typeParameter));
-        setNextPage(addTypesToUrl(pageData.next || null, typeParameter));
-      }
+        setPrevPage(addTypesToUrl(pageData.previous || null, typeparameter.current));
+        setNextPage(addTypesToUrl(pageData.next || null, typeparameter.current));
 
+
+      } else { // etiher artists albums or album tracks or playlist tracks; so there is only one type of data
+        let playlistTracks = [];
+        // disc_number is unique for album tracks  and  added_by is unique for plalists tracks
+        if (data.items[0].disc_number) { //tracks of album by default don't have image provided
+          const albumImage = {url: document.getElementsByClassName("search-results-grid")[0].getElementsByClassName("result-image")[0].src};
+          
+          data.items.forEach(track => track.images = albumImage);
+
+        } else if (data.items[0].added_by) { //formatting data
+          data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
+        }
+
+        const type = data.items[0].type;
+        setAlbumsData(type === "album" ? data.items : []);
+        setArtistsData(data.artists ? data.artists.items : []);
+        setPlaylistsData(data.playlists ? data.playlists.items : []);
+        setTracksData(type === "track" ? data.items : (playlistTracks.length ? playlistTracks : []));
+
+        setPrevPage(data.previous);
+        setNextPage(data.next);
+      }
     } else errorHandling(response);
   }
 
 
   function renderDisplayData(displayData, isPicked) {
-    let idx = 0;
+    let idx = 0; //make sure that keys are unique
     return displayData.map(elem => (
       <ResultTemplate
         type={elem.type}
-        img={elem.images  ||  elem.album.images}
+        img={elem.images || elem.album.images}
         name={elem.name}
         idForTracks={elem.id}
-        artistId={elem.artists ? elem.artists : elem.id}
+        artistId={elem.artists ? elem.artists.id : elem.id}
         spotifyUrl={elem.external_urls.spotify}
         setAlbumsData={setAlbumsData}
         setArtistsData={setArtistsData}
@@ -465,8 +473,9 @@ function App() {
         setNextPage={setNextPage}
         pickedMusic={pickedMusic}
         setPickedMusic={setPickedMusic}
+        typeparameter={typeparameter}
         isPicked={isPicked}
-        key={'' + elem.id + elem.external_urls.spotify + idx++}
+        key={'' + elem.id + idx++}
       />
     ))
   }
@@ -571,7 +580,7 @@ function App() {
             <button
               className='change-button'
               disabled={nextPage === null  || // Spotify allows to set offset larger than number of elements. This is in order to prevent empty pages being shown
-                ! (albumsData.length === perPage  ||  artistsData.length === perPage  ||  playlistsData.length === perPage  ||  tracksData.length === perPage)}
+                ! (albumsData.length >= perPage  ||  artistsData.length >= perPage  ||  playlistsData.length >= perPage  ||  tracksData.length >= perPage)}
               onClick={() => searchDisplayData(nextPage)
             }>
               <img src={process.env.PUBLIC_URL + "/images/nextPage.png"} alt='next page'/>
