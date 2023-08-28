@@ -37,15 +37,15 @@ function addTypesToUrl(url, typeParameter) {
 
 
 function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
-  function addArt(e) {
+  function addMusic(e) {
     const pickedNode = e.target.closest(".search-result");
     
     // processing data to make it same as from Spotify whilst including only necessary data
-    let pickedData = {type: type, id: idForTracks, artists: artistId};
+    let pickedData = {type: type, id: idForTracks, artists: [{url: artistId}]};
 
 
     pickedData.images = [{url: pickedNode.getElementsByClassName("result-image")[0].src}];
-    pickedData.name = pickedNode.getElementsByClassName("name")[0].innerText.slice(6); // slicing "Name: "
+    pickedData.name = pickedNode.getElementsByClassName("name")[0].innerText; // slicing "Name: "
 
     let spotifyHref = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href;
     pickedData.external_urls = {};
@@ -54,7 +54,7 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
 
     if (pickedMusic.every(music => music.external_urls.spotify !== spotifyHref)) setPickedMusic([...pickedMusic, pickedData]); // avoiding duplicates
 
-
+    console.log("p", pickedData);
     const popUp = document.querySelector(".notification.down");
     popUp.classList.add("shown-notification");
     setTimeout(() => popUp.classList.remove("shown-notification"), 3000)
@@ -63,7 +63,7 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
 
   return (
     <div className='result-button-container'>
-      <button className='result-button' onClick={addArt}>
+      <button className='result-button' onClick={addMusic}>
         <img src={process.env.PUBLIC_URL + '/images/add.png'} alt='add' loading='lazy'/>
       </button>
     </div>
@@ -72,7 +72,7 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
 
 
 function ThrashButton({pickedMusic, setPickedMusic}) {
-  function removeArt(e) {
+  function removeMusic(e) {
     const pickedNode = e.target.closest(".search-result");
     const toDelete = pickedNode.getElementsByClassName("result-info-container")[0].getElementsByTagName("a")[0].href; // spotify links are unique (no duplicates are allowed)
 
@@ -84,7 +84,7 @@ function ThrashButton({pickedMusic, setPickedMusic}) {
 
   return (
     <div className='result-button-container'>
-      <button className='result-button' onClick={removeArt}>
+      <button className='result-button' onClick={removeMusic}>
         <img src={process.env.PUBLIC_URL + '/images/thrash.png'} alt='thrash' loading='lazy'/>
       </button>
     </div>
@@ -93,7 +93,7 @@ function ThrashButton({pickedMusic, setPickedMusic}) {
 
 
 function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
-   setAlbumsData, setArtistsData, setPlaylistsData, setTracksData,
+   setAlbumsData, setMusicistsData, setPlaylistsData, setTracksData,
   setPrevPage, setNextPage, pickedMusic, setPickedMusic, typeparameter, isPicked}) {
   
   const token = React.useContext(TokenContext);
@@ -114,7 +114,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
       const data = await response.json();
       
       setAlbumsData(data.items ? data.items : []);
-      setArtistsData(data.artists ? data.artists : []);
+      setMusicistsData(data.artists ? data.artists : []);
       setPlaylistsData([]);
       setTracksData([]);
       
@@ -150,7 +150,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
         data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
       }
 
-      setArtistsData([]);
+      setMusicistsData([]);
       setAlbumsData([]);
       setPlaylistsData([]);
 
@@ -174,7 +174,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
         {type !== "track"  &&  <button onClick={trackFetching}>See tracks</button>}
         <a href={spotifyUrl}>Check in Spotify</a>
       </div>
-        {(type === "album"  ||  type === "artist") &&
+        {(type === "artist"  ||  type === "track") &&
         (isPicked ?
         <ThrashButton
           pickedMusic={pickedMusic}
@@ -303,7 +303,7 @@ function App() {
   const [token, setToken] = useState("");
   const searchInput = useRef();
   const [albumsData, setAlbumsData] = useState([]);
-  const [artistsData, setArtistsData] = useState([]);
+  const [artistsData, setMusicistsData] = useState([]);
   const [playlistsData, setPlaylistsData] = useState([]);
   const [tracksData, setTracksData] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -424,7 +424,7 @@ function App() {
 
       if (! data.items) { // default search for items
         setAlbumsData(data.albums ? data.albums.items : []);
-        setArtistsData(data.artists ? data.artists.items : []);
+        setMusicistsData(data.artists ? data.artists.items : []);
         setPlaylistsData(data.playlists ? data.playlists.items : []);
         setTracksData(data.tracks ? data.tracks.items : []);
 
@@ -447,7 +447,7 @@ function App() {
 
         const type = data.items[0].type;
         setAlbumsData(type === "album" ? data.items : []);
-        setArtistsData(data.artists ? data.artists.items : []);
+        setMusicistsData(data.artists ? data.artists.items : []);
         setPlaylistsData(data.playlists ? data.playlists.items : []);
         setTracksData(type === "track" ? data.items : (playlistTracks.length ? playlistTracks : []));
 
@@ -474,7 +474,7 @@ function App() {
         artistId={elem.artists ? elem.artists.map(artist => artist.id) : elem.id}
         spotifyUrl={elem.external_urls.spotify}
         setAlbumsData={setAlbumsData}
-        setArtistsData={setArtistsData}
+        setMusicistsData={setMusicistsData}
         setPlaylistsData={setPlaylistsData}
         setTracksData={setTracksData}
         setPrevPage={setPrevPage}
@@ -488,7 +488,7 @@ function App() {
     ))
   }
 
-
+  console.log(pickedMusic)
   function resetFilters() {
     const filtersList = document.getElementsByClassName("filters-list")[0];
 
@@ -537,7 +537,7 @@ function App() {
         <SlideIn 
           genres={genres}
           setAlbumsData={setAlbumsData}
-          setArtistsData={setArtistsData}
+          setMusicistsData={setMusicistsData}
           setPlaylistsData={setPlaylistsData}
           setTracksData={setTracksData}
           setPrevPage={setPrevPage}
@@ -609,7 +609,7 @@ function App() {
 export default App;
 
 
-function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTracksData,
+function SlideIn({genres, setAlbumsData, setMusicistsData, setPlaylistsData, setTracksData,
   setPrevPage, setNextPage, pickedMusic, setPickedMusic, renderPicked}) {
   
   const token = React.useContext(TokenContext);
@@ -625,18 +625,18 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
     
     const itemsCount = genres.length + pickedSearchResults.length;
     if (itemsCount > 0  &&  itemsCount <= 5) {
-      let albums = [];
+      let tracks = [];
       let artists = [];
       pickedMusic.forEach(music => {
-        if (music.type === "album") albums = [...albums, music.id];
+        if (music.type === "track") tracks = [...tracks, music.id];
         else if (music.type === "artist") artists = [...artists, music.id];
       })
 
 
       let url = "https://api.spotify.com/v1/recommendations?market=PL";
-      url += albums.length ? "&seed_albums=" + albums : "";
       url += artists.length ? "&seed_artists=" + artists : "";
       url += genres.length ? "&seed_genres=" + genres : "";
+      url += tracks.length ? "&seed_tracks=" + tracks : "";
       
 
       const response = await fetch(url, {
@@ -649,7 +649,7 @@ function SlideIn({genres, setAlbumsData, setArtistsData, setPlaylistsData, setTr
         let data = await response.json();
         
         setAlbumsData([]);
-        setArtistsData([]);
+        setMusicistsData([]);
         setPlaylistsData([]);
         setTracksData(data.tracks);
 
