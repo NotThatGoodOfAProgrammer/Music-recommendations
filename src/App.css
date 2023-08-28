@@ -81,7 +81,6 @@ input[type="text"]:focus {
 .filters-bar {
   top: 0;
   border-bottom: var(--border-style);
-  box-sizing: border-box;
 }
 
 .picked-music-tab-container, .picked-music-tab,
@@ -93,6 +92,7 @@ input[type="text"]:focus {
 
 .picked-music-tab-container { /* connects to 'added message' section */
   position: relative;
+  aspect-ratio: 1 / 1;
 }
 
 .picked-music-tab img {
@@ -128,7 +128,7 @@ input[type="text"]:focus {
 .filter-options {
   padding: 20px 0;
   position: fixed;
-  top: 70px;
+  top: 69px; /* 1px lower because :hover doesn't work on border */
   left: 0px;
   background-color: var(--spotify-grey-solid);
   width: 100%;
@@ -149,8 +149,7 @@ input[type="text"]:focus {
 .filter-options, .fluid-row-content {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s ease-in, visibility 0.4s ease-in;
-  transition-delay: 0.1s; 
+  transition: opacity 0.3s ease-in, visibility 0.3s ease-in;
 }
 
 .filter-button-container:hover .filter-options,
@@ -174,8 +173,6 @@ input[type="text"]:focus {
   border: 1px solid var(--spotify-black-solid);
   border-radius: 6px;
   padding: 8px 10px;
-  bottom: -60%;
-  right: -40%;
   transition: opacity 1s, visibility 1s;
 }
 
@@ -187,10 +184,33 @@ input[type="text"]:focus {
   top: -20px;
   left: 10px;
   margin-left: -5px;
+  margin-left: -5px;
   border-width: 10px;
   border-style: solid;
   border-color: transparent transparent var(--spotify-sand-solid);
   transition: opacity 1s, visibility 1s;
+}
+
+.down {
+  bottom: -60%;
+  right: -40%;
+}
+
+.down::after {
+  top: -20px;
+  left: 10px;
+  border-color: transparent transparent var(--spotify-sand-solid);
+}
+
+.left {
+  top: -4px;
+  right: -22px;
+}
+
+.left::after {
+  top: 10px;
+  left: -15px;
+  border-color: transparent var(--spotify-sand-solid) transparent transparent;
 }
 
 .shown-notification, .shown-notification::after {
@@ -273,6 +293,10 @@ input[type="text"]:focus {
   display: block;
   text-align: left;
   padding: 2px 0;
+}
+
+.name {
+  border-bottom: var(--border-style);
 }
 
 .result-button-container {
@@ -397,7 +421,7 @@ footer {
   }
 
   .filter-options {
-    width: 276px;
+    width: 272px;
     border: var(--border-style);
     left: 50%;
     transform: translateX(-50%);
@@ -441,7 +465,7 @@ footer {
     transform: translateX(185px);
   }
 
-  .App:has(.shown) > .filters-bar .picked-music-tab {
+  .App:has(.shown) > .filters-bar .picked-music-tab > * {
     display: none;
   }
 }

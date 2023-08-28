@@ -43,6 +43,7 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
     // processing data to make it same as from Spotify whilst including only necessary data
     let pickedData = {type: type, id: idForTracks, artists: artistId};
 
+
     pickedData.images = [{url: pickedNode.getElementsByClassName("result-image")[0].src}];
     pickedData.name = pickedNode.getElementsByClassName("name")[0].innerText.slice(6); // slicing "Name: "
 
@@ -50,10 +51,13 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
     pickedData.external_urls = {};
     pickedData.external_urls.spotify = spotifyHref;
     
+
     if (pickedMusic.every(music => music.external_urls.spotify !== spotifyHref)) setPickedMusic([...pickedMusic, pickedData]); // avoiding duplicates
 
-    document.getElementsByClassName("notification")[0].classList.add("shown-notification");
-    setTimeout(() => document.getElementsByClassName("notification")[0].classList.remove("shown-notification"), 3000)
+
+    const popUp = document.querySelector(".notification.down");
+    popUp.classList.add("shown-notification");
+    setTimeout(() => popUp.classList.remove("shown-notification"), 3000)
   }
 
 
@@ -93,25 +97,12 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   setPrevPage, setNextPage, pickedMusic, setPickedMusic, typeparameter, isPicked}) {
   
   const token = React.useContext(TokenContext);
-
-  let imgUrl = ''; // processing image data
-  if (img !== undefined) {
-    try {
-      imgUrl = img[0].url;
-    } catch(e) {
-      imgUrl = img.url;
-    }
-  }
   
-  let id = [];
-  if (Array.isArray(artistId)) artistId.forEach(artist => id = [...id, artist.id]);
-  else id = [artistId];
-
 
   async function artistFetching() {
     let url;
-    if (type === "artist") url = "https://api.spotify.com/v1/artists/" + id + "/albums";
-    else if (type === "album"  ||  type === "track") url =  "https://api.spotify.com/v1/artists?ids=" + id;
+    if (type === "artist") url = "https://api.spotify.com/v1/artists/" + artistId + "/albums";
+    else if (type === "album"  ||  type === "track") url =  "https://api.spotify.com/v1/artists?ids=" + artistId;
     
     const response = await fetch(url, {
       headers: {
@@ -153,8 +144,8 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
       
       let playlistTracks = [];
       if (type === "album") { // tracks of album by default don't have image provided
-        data.items.forEach(track => track.images = img);
-
+        data.items.forEach(track => track.images = [{url: img}]);
+        
       } else if (type === "playlist") {
         data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
       }
@@ -176,9 +167,9 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   
   return (
     <div className='search-result'>
-      <img className='result-image' alt={imgUrl && name} src={imgUrl || (process.env.PUBLIC_URL + "/images/noImage.png")} loading='lazy'/>
+      <img className='result-image' alt={img && name} src={img || (process.env.PUBLIC_URL + "/images/noImage.png")} loading='lazy'/>
       <div className='result-info-container'>
-        <span className='name'>{"Name: " + name}</span>
+        <span className='name'>{name}</span>
         {type !== "playlist"  &&  <button onClick={artistFetching}>{"See " + (type === "artist" ? "albums" : "artists")}</button>}
         {type !== "track"  &&  <button onClick={trackFetching}>See tracks</button>}
         <a href={spotifyUrl}>Check in Spotify</a>
@@ -413,7 +404,7 @@ function App() {
   }
 
   
-  async function searchDisplayData(url) {
+  async function searchDisplayData(url, notify = false) {
     const response = await fetch(url, {
       headers: {
           Authorization: `Bearer ${token}`
@@ -423,6 +414,14 @@ function App() {
     if (response.ok) {
       const data = await response.json();
       
+
+      if (notify) {
+        const popUp = document.querySelector(".notification.left");
+        popUp.classList.add("shown-notification");
+        setTimeout(() => popUp.classList.remove("shown-notification"), 3000);
+      }
+
+
       if (! data.items) { // default search for items
         setAlbumsData(data.albums ? data.albums.items : []);
         setArtistsData(data.artists ? data.artists.items : []);
@@ -438,10 +437,10 @@ function App() {
         let playlistTracks = [];
         // disc_number is unique for album tracks  and  added_by is unique for plalists tracks
         if (data.items[0].disc_number) { // tracks from album by default don't have image provided
-          const albumImage = {url: document.getElementsByClassName("search-results-grid")[0].getElementsByClassName("result-image")[0].src};
+          const img = {url: document.getElementsByClassName("search-results-grid")[0].getElementsByClassName("result-image")[0].src};
           
-          data.items.forEach(track => track.images = albumImage);
-
+          data.items.forEach(track => track.images = [img]);
+          
         } else if (data.items[0].added_by) { // formatting data
           data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
         }
@@ -464,10 +463,15 @@ function App() {
     return displayData.map(elem => (
       <ResultTemplate
         type={elem.type}
-        img={elem.images || elem.album.images}
-        name={elem.name}
+        img={(elem.images  &&  elem.images.length
+              ? elem.images[0].url : '')
+              ||
+              (elem.album  &&  elem.album.images  &&  elem.album.images.length
+              ? elem.album.images[0].url : '')
+            }
+        name={elem.name.length < 30 ? elem.name : (elem.name.slice(0, 25) + "...")}
         idForTracks={elem.id}
-        artistId={elem.artists ? elem.artists.id : elem.id}
+        artistId={elem.artists ? elem.artists.map(artist => artist.id) : elem.id}
         spotifyUrl={elem.external_urls.spotify}
         setAlbumsData={setAlbumsData}
         setArtistsData={setArtistsData}
@@ -507,7 +511,7 @@ function App() {
             <button className='picked-music-tab'onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}>
               <img src={process.env.PUBLIC_URL + "/images/sideBar.png"} alt='side bar'/>
             </button>
-            <div className='notification'>
+            <div className='notification down'>
               <span>Added</span>
             </div>
           </div>
@@ -551,9 +555,14 @@ function App() {
               <button onClick={resetFilters}>Reset filters</button>
             </div>
             <div className='search-form-container'>
-              <form className='search-form' onSubmit={e => searchDisplayData(getUrlFromClient(e))}>
+              <form className='search-form' onSubmit={e => searchDisplayData(getUrlFromClient(e), true)}>
                 <input className='search-input' type="text" ref={searchInput}/>
                 <button className='submit-button' type='submit'>Submit</button>
+                <div className='fluid-row'>
+                  <div className='notification left'>
+                    <span>Submitted</span>
+                  </div>
+                </div>
               </form>
             </div>
             <div className='search-results-container'>
