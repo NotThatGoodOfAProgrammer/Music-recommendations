@@ -29,6 +29,7 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 
 ## How to use guide:
 
+0. *Only once* I have to add you to my Projects user list, else Spotify will throw error 403 if u interact with anything. Message me e-mail that you use for Spotify and optionally your full name
 1. Click on "Get token" and login with Spotify account
 2. Choose what type you are looking for in filters
 3. *Optional* Select date release and/or genres in filters
@@ -46,6 +47,11 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 ## Possible issues
 
 * releases from past 2 weeks(tag:new) seems not to work with genres [read more](https://community.spotify.com/t5/Spotify-for-Developers/API-No-way-to-search-tag-new-with-genre/td-p/5483721)
+
+## Furher improvments
+
+1. Spotify uses HTTP/1.1 instead of HTTP/2
+2. Can't change neither format of images nor their size from Spotifys response. There are some APIs that can do the later however, their either to [slow](https://rapidapi.com/jdiez/api/mediacrush/pricing) [(2nd link)](https://www.filestack.com/pricing/#/marketplace) or have [too low of a limit](https://www.abstractapi.com/api/image-processing-optimization-api#pricing) to be beneficial. There is also [proxy](https://imgproxy.net/#pro) option but I still would have to invest time/money into it.
 
 ## Credits:
 Color palette from Spotify<br>
