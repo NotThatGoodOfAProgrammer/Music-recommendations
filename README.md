@@ -26,6 +26,7 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 4. Git commands and terminal usage in general
 5. CSS pseudo-classes
 6. Writing README.md files
+7. Projects file structure
 
 ## How to use guide:
 
@@ -52,6 +53,8 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 
 1. Spotify uses HTTP/1.1 instead of HTTP/2
 2. Can't change neither format of images nor their size from Spotifys response. There are some APIs that can do the later however, their either to [slow](https://rapidapi.com/jdiez/api/mediacrush/pricing) [(2nd link)](https://www.filestack.com/pricing/#/marketplace) or have [too low of a limit](https://www.abstractapi.com/api/image-processing-optimization-api#pricing) to be beneficial. There is also [proxy](https://imgproxy.net/#pro) option but I still would have to invest time/money into it.
+3. There is a lot of main-thread work being done. While I could probably improve rendering a bit there is what lighthouse classifies as "Other" that is taking up most of the time. Not really sure how to tackle this problem.
+4. Total Blocking Time is high from what it seems expensive animations and rendering. But it would take a lot of effort to fix it and I didn't find it disturbing.
 
 ## Credits:
 Color palette from Spotify<br>

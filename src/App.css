@@ -21,7 +21,7 @@ body {
 }
 
 img {
-  aspect-ratio: auto 1 / 1;
+  aspect-ratio: 1 / 1;
 }
 
 button:disabled {
@@ -289,7 +289,7 @@ input[type="text"]:focus {
 
 .result-image {
   height: 100%;
-  max-width: 150px;
+  object-fit: cover;
 }
 
 .result-info-container {
@@ -408,6 +408,10 @@ footer {
 .placeholder {
   background-color: var(--spotify-grey-solid);
   padding-inline: 30px;
+}
+
+.placeholder img {
+  max-width: calc(100vw - 90px); /* make sure that design doesn't break on devices where width < 256 + 90 */
 }
 
 .placeholder span {

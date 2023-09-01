@@ -22,7 +22,9 @@ function App() {
   const REDIRECT_URI = "https://notthatgoodofaprogrammer.github.io/Music-recommendations";
   const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
   const RESPONSE_TYPE = "token";
-  const perPage = 20; // default limit of elements on most API responses
+
+  let maxPerPage = 10;
+  if (window.innerWidth >= 700) maxPerPage = 20;
   
   const [token, setToken] = useState("");
   const searchInput = useRef();
@@ -34,7 +36,7 @@ function App() {
   const [prevPage, setPrevPage] = useState("");
   const [nextPage, setNextPage] = useState("");
   const [pickedMusic, setPickedMusic] = useState([]);
-  const typeparameter = useRef("");
+  const typeParameter = useRef("");
   
   useEffect(() => {
     const hash = window.location.hash;
@@ -88,11 +90,12 @@ function App() {
       types = [...types, (checkbox.parentElement.innerText || checkbox.parentElement.textContent)];
     })
 
-    typeparameter.current = "&type=" + types;
+    typeParameter.current = "&type=" + types;
+    typeParameter.dataLimit = Math.floor(maxPerPage / types.length);
 
 
     const isTagChecked = dateOptions.querySelector("input[type=checkbox]:checked");
-    const tagParameter = (isTagChecked  &&  (typeparameter.current === "&type=album")) ? " tag:new" : "";
+    const tagParameter = (isTagChecked  &&  (typeParameter.current === "&type=album")) ? " tag:new" : "";
 
 
     let yearParameter = '';
@@ -122,13 +125,14 @@ function App() {
     
 
     const url = "https://api.spotify.com/v1/search?q=" + searchInput.current.value
-                    + tagParameter + yearParameter + genreParameter + typeparameter.current;
+                    + tagParameter + yearParameter + genreParameter + typeParameter.current
+                    + "&limit=" + typeParameter.dataLimit;
     
     return url;
   }
 
   
-  async function searchDisplayData(url, notify = false) {
+  async function fetchData(url, notify = false) {
     const response = await fetch(url, {
       headers: {
           Authorization: `Bearer ${token}`
@@ -148,25 +152,26 @@ function App() {
 
       if (! data.items) { // default search for items
         setAlbumsData(data.albums ? data.albums.items : []);
-        setMusicistsData(data.artists ? data.artists.items : []);
+        setMusicistsData(data.artists ? (data.artists.items ? data.artists.items: data.artists) : []);
         setPlaylistsData(data.playlists ? data.playlists.items : []);
-        setTracksData(data.tracks ? data.tracks.items : []);
+        setTracksData(data.tracks ? (data.tracks.items ? data.tracks.items : data.tracks) : []);
 
         const pageData = data.albums || data.artists || data.playlists || data.tracks;
-        setPrevPage(addTypesToUrl(pageData.previous || null, typeparameter.current));
-        setNextPage(addTypesToUrl(pageData.next || null, typeparameter.current));
+        setPrevPage(addTypesToUrl(pageData.previous || null, typeParameter.current));
+        setNextPage(addTypesToUrl(pageData.next || null, typeParameter.current));
 
 
-      } else { // either artists albums, album tracks or playlist tracks; so there is only one type of data
+      } else { // always one type of data
+
         let playlistTracks = [];
-        // disc_number is unique for album tracks  and  added_by is unique for plalists tracks
-        if (data.items[0].disc_number) { // tracks from album by default don't have image provided
+        
+        if (data.items[0].disc_number) { // disc_number is unique for album tracks
           const img = {url: document.getElementsByClassName("search-results-grid")[0].getElementsByClassName("result-image")[0].src};
+          // tracks from album by default don't have image provided
+          data.items.forEach(track => track.images || (track.images = [img]));
           
-          data.items.forEach(track => track.images = [img]);
-          
-        } else if (data.items[0].added_by) { // formatting data
-          data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
+        } else if (data.items[0].added_by) {// added_by is unique for plalists tracks
+          data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]); // formatting data
         }
 
         const type = data.items[0].type;
@@ -182,7 +187,7 @@ function App() {
   }
 
 
-  function renderDisplayData(displayData, isPicked) {
+  function renderData(displayData, isPicked) {
     let idx = 0; // makes sure that keys are unique
     return displayData.map(elem => (
       <ResultTemplate
@@ -197,15 +202,10 @@ function App() {
         idForTracks={elem.id}
         artistId={elem.artists ? elem.artists.map(artist => artist.id) : elem.id}
         spotifyUrl={elem.external_urls.spotify}
-        token={token}
-        typeparameter={typeparameter}
+        typeParameter={typeParameter}
+        maxPerPage={maxPerPage}
         isPicked={isPicked}
-        setAlbumsData={setAlbumsData}
-        setMusicistsData={setMusicistsData}
-        setPlaylistsData={setPlaylistsData}
-        setTracksData={setTracksData}
-        setPrevPage={setPrevPage}
-        setNextPage={setNextPage}
+        fetchData={fetchData}
         pickedMusic={pickedMusic}
         setPickedMusic={setPickedMusic}
         key={'' + elem.id + idx++}
@@ -233,8 +233,9 @@ function App() {
       <FiltersBar genres={genres}/>
       <SlideIn
         token={token}
+        maxPerPage={maxPerPage}
         genres={genres}
-        renderPicked={renderDisplayData}
+        renderPicked={renderData}
         setAlbumsData={setAlbumsData}
         setMusicistsData={setMusicistsData}
         setPlaylistsData={setPlaylistsData}
@@ -253,8 +254,8 @@ function App() {
             <button onClick={resetFilters}>Reset filters</button>
           </div>
           <div className='search-form-container'>
-            <form className='search-form' onSubmit={e => searchDisplayData(getUrlFromClient(e), true)}>
-              <input className='search-input' type="text" ref={searchInput}/>
+            <form className='search-form' onSubmit={e => fetchData(getUrlFromClient(e), true)}>
+              <input className='search-input' type="text" placeholder='Search for music' ref={searchInput}/>
               <button className='submit-button' type='submit'>Submit</button>
               <div className='fluid-row'>
                 <div className='notification left'>
@@ -265,10 +266,10 @@ function App() {
           </div>
           <div className='search-results-container'>
             <div className='search-results-grid'>
-              {!! albumsData.length  &&  renderDisplayData(albumsData, false)}
-              {!! artistsData.length  &&  renderDisplayData(artistsData, false)}
-              {!! playlistsData.length  &&  renderDisplayData(playlistsData, false)}
-              {!! tracksData.length  &&  renderDisplayData(tracksData, false)}
+              {!! albumsData.length  &&  renderData(albumsData, false)}
+              {!! artistsData.length  &&  renderData(artistsData, false)}
+              {!! playlistsData.length  &&  renderData(playlistsData, false)}
+              {!! tracksData.length  &&  renderData(tracksData, false)}
               {!! (albumsData.length  ||  artistsData.length  ||  playlistsData.length  ||  tracksData.length)
               ||  <Placeholder />}
             </div>
@@ -277,7 +278,7 @@ function App() {
       </div>
       <footer>
         <div className='change-page-button-container'>
-          <button className='change-page-button' disabled={! prevPage} onClick={() => searchDisplayData(prevPage)}>
+          <button className='change-page-button' disabled={! prevPage} onClick={() => fetchData(prevPage)}>
             <img src={process.env.PUBLIC_URL + "/images/prevPage.png"} alt='prev page'/>
           </button>
         </div>
@@ -291,9 +292,12 @@ function App() {
         <div className='change-page-button-container'>
           <button
             className='change-page-button'
-            disabled={nextPage === null  || // Spotify allows setting an offset larger than the number of elements. This is in order to prevent empty pages being shown
-              ! (albumsData.length >= perPage  ||  artistsData.length >= perPage  ||  playlistsData.length >= perPage  ||  tracksData.length >= perPage)}
-            onClick={() => searchDisplayData(nextPage)}
+            disabled={
+              nextPage === null  || // Spotify allows setting an offset larger than the number of elements. This is in order to prevent empty pages being shown
+              (albumsData.length < typeParameter.dataLimit  &&  artistsData.length < typeParameter.dataLimit
+              &&  playlistsData.length < typeParameter.dataLimit  &&  tracksData.length < typeParameter.dataLimit)
+            }
+            onClick={() => fetchData(nextPage)}
           >
             <img src={process.env.PUBLIC_URL + "/images/nextPage.png"} alt='next page'/>
           </button>

@@ -59,75 +59,33 @@ function ThrashButton({pickedMusic, setPickedMusic}) {
 
 
 function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
-  token, typeparameter, isPicked,
-  setAlbumsData, setMusicistsData, setPlaylistsData, setTracksData,
-  setPrevPage, setNextPage, pickedMusic, setPickedMusic}) {
-  
+  maxPerPage, typeParameter, isPicked, fetchData, pickedMusic, setPickedMusic}) {
   
 
   async function artistFetching() {
+    typeParameter.current = "&type=" + type;
+    typeParameter.dataLimit = maxPerPage;
+
     let url;
-    if (type === "artist") url = "https://api.spotify.com/v1/artists/" + artistId + "/albums";
+    if (type === "artist") url = "https://api.spotify.com/v1/artists/" + artistId + "/albums?limit=" + typeParameter.dataLimit;
     else if (type === "album"  ||  type === "track") url =  "https://api.spotify.com/v1/artists?ids=" + artistId;
     
-    const response = await fetch(url, {
-      headers: {
-          Authorization: `Bearer ${token}`
-      }
-    })
 
-    if (response.ok) {
-      const data = await response.json();
-      
-      setAlbumsData(data.items ? data.items : []);
-      setMusicistsData(data.artists ? data.artists : []);
-      setPlaylistsData([]);
-      setTracksData([]);
-      
-      typeparameter.current = "&type=" + (data.artists ? "artist" : "album");
-      
-      setPrevPage(data.previous);
-      setNextPage(data.next);
-      
-    } else errorHandling(response);
+    fetchData(url);
   }
 
 
   async function trackFetching() {
+    typeParameter.current = "&type=" + type;
+    typeParameter.dataLimit = maxPerPage;
+
     let url;
-    if (type === "album") url = "https://api.spotify.com/v1/albums/" + idForTracks + "/tracks?market=pl";
+    if (type === "album") url = "https://api.spotify.com/v1/albums/" + idForTracks + "/tracks?market=pl&limit=" + typeParameter.dataLimit;
     else if (type === "artist") url = "https://api.spotify.com/v1/artists/" + idForTracks + "/top-tracks?market=pl";
-    else if (type === "playlist") url = "https://api.spotify.com/v1/playlists/" + idForTracks + "/tracks?market=pl";
+    else if (type === "playlist") url = "https://api.spotify.com/v1/playlists/" + idForTracks + "/tracks?market=pl&limit=" + typeParameter.dataLimit;
     
-    const response = await fetch(url, {
-      headers: {
-          Authorization: `Bearer ${token}`
-      }
-    })
 
-    if (response.ok) {
-      let data = await response.json();
-      
-      let playlistTracks = [];
-      if (type === "album") { // tracks of album by default don't have image provided
-        data.items.forEach(track => track.images = [{url: img}]);
-        
-      } else if (type === "playlist") {
-        data.items.forEach(item => playlistTracks = [...playlistTracks, item.track]);
-      }
-
-      setMusicistsData([]);
-      setAlbumsData([]);
-      setPlaylistsData([]);
-
-      if (type === "album") setTracksData(data.items ? data.items : []);
-      else if (type === "artist") setTracksData(data.tracks ? data.tracks : []);
-      else if (type === "playlist") setTracksData(playlistTracks);
-      
-      setPrevPage(data.previous);
-      setNextPage(data.next);
-
-    } else errorHandling(response);
+    fetchData(url);
   }
 
   

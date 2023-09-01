@@ -3,7 +3,7 @@ import {errorHandling} from './functions.js';
 import {GenresList} from "./FiltersBar.js"
 
 
-function SlideIn({token, genres, renderPicked,
+function SlideIn({token, maxPerPage, genres, renderPicked,
   setAlbumsData, setMusicistsData, setPlaylistsData, setTracksData,
   setPrevPage, setNextPage, pickedMusic, setPickedMusic}) {
 
@@ -26,11 +26,12 @@ function SlideIn({token, genres, renderPicked,
       })
 
 
-      let url = "https://api.spotify.com/v1/recommendations?market=PL";
+      let url = "https://api.spotify.com/v1/recommendations?market=PL&limit=" + maxPerPage;
       url += artists.length ? "&seed_artists=" + artists : "";
       url += genres.length ? "&seed_genres=" + genres : "";
       url += tracks.length ? "&seed_tracks=" + tracks : "";
-      
+    
+
 
       const response = await fetch(url, {
         headers: {
