@@ -1,5 +1,4 @@
-import React from "react"
-import {errorHandling} from './functions.js';
+import React from "react";
 
 
 function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {

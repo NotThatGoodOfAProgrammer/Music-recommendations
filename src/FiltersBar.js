@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 
 function FilterOptionCheckbox({name}) {
@@ -79,7 +79,7 @@ function GenresList(genres) {
     }
   }
   
-  
+
   return(
     <>
       <input className='genres-search-bar' onChange={searchGenres} type="text"/>

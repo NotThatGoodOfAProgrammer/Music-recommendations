@@ -411,7 +411,7 @@ footer {
 }
 
 .placeholder img {
-  max-width: calc(100vw - 90px); /* make sure that design doesn't break on devices where width < 256 + 90 */
+  width: min(256px, calc(100vw - 90px)); /* make sure that design doesn't break on devices where width < 256 + 90 */
 }
 
 .placeholder span {

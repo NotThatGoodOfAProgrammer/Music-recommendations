@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import {errorHandling} from './functions.js';
 import {GenresList} from "./FiltersBar.js"
 
