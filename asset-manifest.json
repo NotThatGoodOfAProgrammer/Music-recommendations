@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Music-recommendations/static/css/main.4582d353.css",
-    "main.js": "/Music-recommendations/static/js/main.de5b22f1.js",
-    "static/js/787.28cb0dcd.chunk.js": "/Music-recommendations/static/js/787.28cb0dcd.chunk.js",
-    "index.html": "/Music-recommendations/index.html",
-    "main.4582d353.css.map": "/Music-recommendations/static/css/main.4582d353.css.map",
-    "main.de5b22f1.js.map": "/Music-recommendations/static/js/main.de5b22f1.js.map",
-    "787.28cb0dcd.chunk.js.map": "/Music-recommendations/static/js/787.28cb0dcd.chunk.js.map"
+    "main.css": "/RECOMmusicENDATIONS/static/css/main.4582d353.css",
+    "main.js": "/RECOMmusicENDATIONS/static/js/main.484837c0.js",
+    "static/js/787.eb7e01a3.chunk.js": "/RECOMmusicENDATIONS/static/js/787.eb7e01a3.chunk.js",
+    "index.html": "/RECOMmusicENDATIONS/index.html",
+    "main.4582d353.css.map": "/RECOMmusicENDATIONS/static/css/main.4582d353.css.map",
+    "main.484837c0.js.map": "/RECOMmusicENDATIONS/static/js/main.484837c0.js.map",
+    "787.eb7e01a3.chunk.js.map": "/RECOMmusicENDATIONS/static/js/787.eb7e01a3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4582d353.css",
-    "static/js/main.de5b22f1.js"
+    "static/js/main.484837c0.js"
   ]
 }
