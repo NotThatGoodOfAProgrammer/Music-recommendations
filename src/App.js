@@ -10,7 +10,7 @@ function Placeholder() {
   return (
     <div className='placeholder'>
       <h2>No results found</h2>
-      <img src={process.env.PUBLIC_URL + "/images/notFound.png"} alt="results not found" />
+      <img src={process.env.PUBLIC_URL + "/images/notFound.webp"} alt="results not found" />
       <span>Try changing filters and search text</span>
     </div>
   )
@@ -279,7 +279,7 @@ function App() {
       <footer>
         <div className='change-page-button-container'>
           <button className='change-page-button' disabled={! prevPage} onClick={() => fetchData(prevPage)}>
-            <img src={process.env.PUBLIC_URL + "/images/prevPage.png"} alt='prev page'/>
+            <img src={process.env.PUBLIC_URL + "/images/prevPage.webp"} alt='prev page'/>
           </button>
         </div>
         <div className='credits-container'>
@@ -299,7 +299,7 @@ function App() {
             }
             onClick={() => fetchData(nextPage)}
           >
-            <img src={process.env.PUBLIC_URL + "/images/nextPage.png"} alt='next page'/>
+            <img src={process.env.PUBLIC_URL + "/images/nextPage.webp"} alt='next page'/>
           </button>
         </div>
       </footer>

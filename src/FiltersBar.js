@@ -96,7 +96,7 @@ function FiltersBar({genres}) {
     <div className='filters-bar'>
       <div className='picked-music-tab-container'>
         <button className='picked-music-tab'onClick={() =>document.getElementsByClassName("slide-in")[0].classList.add("shown")}>
-          <img src={process.env.PUBLIC_URL + "/images/sideBar.png"} alt='side bar'/>
+          <img src={process.env.PUBLIC_URL + "/images/sideBar.webp"} alt='side bar'/>
         </button>
         <div className='notification down'>
           <span>Added</span>
@@ -117,7 +117,7 @@ function FiltersBar({genres}) {
       </div>
       <div className='clear-data-button-container'>
         <button className='clear-data-button' onClick={() => localStorage.clear()}>
-          <img src={process.env.PUBLIC_URL + "/images/cloudDataDelete.png"} alt='clear data'/>
+          <img src={process.env.PUBLIC_URL + "/images/cloudDataDelete.webp"} alt='clear data'/>
         </button>
       </div>
     </div>

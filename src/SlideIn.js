@@ -72,7 +72,7 @@ function SlideIn({token, maxPerPage, genres, renderPicked,
       <div className='slide-in-header'>
         <div className='close-slide-in-container'>
           <button className='close-slide-in' onClick={(e) => e.target.closest(".slide-in").classList.remove("shown")}>
-            <img src={process.env.PUBLIC_URL + "/images/close.png"} alt='close'/>
+            <img src={process.env.PUBLIC_URL + "/images/close.webp"} alt='close'/>
           </button>
         </div>
         <div className='note-container'>

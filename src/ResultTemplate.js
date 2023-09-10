@@ -29,7 +29,7 @@ function AddButton({idForTracks, artistId, type, pickedMusic, setPickedMusic}) {
   return (
     <div className='result-button-container'>
       <button className='result-button' onClick={addMusic}>
-        <img src={process.env.PUBLIC_URL + '/images/add.png'} alt='add' loading='lazy'/>
+        <img src={process.env.PUBLIC_URL + '/images/add.webp'} alt='add' loading='lazy'/>
       </button>
     </div>
   );
@@ -50,7 +50,7 @@ function ThrashButton({pickedMusic, setPickedMusic}) {
   return (
     <div className='result-button-container'>
       <button className='result-button' onClick={removeMusic}>
-        <img src={process.env.PUBLIC_URL + '/images/thrash.png'} alt='thrash' loading='lazy'/>
+        <img src={process.env.PUBLIC_URL + '/images/thrash.webp'} alt='thrash' loading='lazy'/>
       </button>
     </div>
   );
@@ -90,7 +90,7 @@ function ResultTemplate({type, img, name, idForTracks, artistId, spotifyUrl,
   
   return (
     <div className='search-result'>
-      <img className='result-image' alt={img && name} src={img || (process.env.PUBLIC_URL + "/images/noImage.png")} loading='lazy'/>
+      <img className='result-image' alt={img && name} src={img || (process.env.PUBLIC_URL + "/images/noImage.webp")} loading='lazy'/>
       <div className='result-info-container'>
         <span className='name'>{name}</span>
         {type !== "playlist"  &&  <button onClick={artistFetching}>{"See " + (type === "artist" ? "albums" : "artists")}</button>}

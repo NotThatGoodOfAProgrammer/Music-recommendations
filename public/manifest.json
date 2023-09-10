@@ -1,5 +1,5 @@
 {
-  "name": "Music recommendations",
+  "name": "RECOMmusicENDATIONS",
   "icons": [
     {
       "src": "logo.ico",
@@ -8,14 +8,14 @@
       "purpose": "any maskable"
     },
     {
-      "src": "logo192.png",
-      "type": "image/png",
+      "src": "logo192.webp",
+      "type": "image/webp",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "logo512.png",
-      "type": "image/png",
+      "src": "logo512.webp",
+      "type": "image/webp",
       "sizes": "512x512",
       "purpose": "any maskable"
     }
