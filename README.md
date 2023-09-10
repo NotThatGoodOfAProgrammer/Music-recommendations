@@ -1,6 +1,6 @@
-# Music recommendations
+# RECOMmusicENDATIONS
 
-### [View website](https://karmatys8.github.io/Music-recommendations)
+### [View website](https://karmatys8.github.io/RECOMmusicENDATIONS)
 
 ### Built on Spotify API
 
