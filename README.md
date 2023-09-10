@@ -35,7 +35,7 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 8. Add more results if you wish to*
 9. Press button in top left corner
 10. *Optional* Add genres*
-11. Click on "See results" and enjoy **Music recommendations**
+11. Click on "See results" and enjoy **RECOMmusicENDATIONS**
 
 \* *only up to 5 results and genres combined can be choosen at once*
 
