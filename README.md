@@ -54,4 +54,5 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 
 ## Credits:
 Color palette from Spotify<br>
-Images and icons from https://www.freepik.com/<br>
+Images from https://www.freepik.com/<br>
+Icons from https://icons8.com/<br>
