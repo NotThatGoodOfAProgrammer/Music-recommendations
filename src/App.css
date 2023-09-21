@@ -326,10 +326,34 @@ footer {
   border-top: var(--border-style);
 }
 
-.credits-container {
+.credits-container, .credits-slide {
   height: 100%;
-  overflow-x: auto;
+  overflow: hidden;
   flex-grow: 1;
+}
+
+@keyframes slideShow {
+  0%, 40% {
+    transform: translateY(0);
+  }
+
+  60%, 100% {
+    transform: translateY(-100%);
+  }
+}
+
+
+.credits-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: 10s infinite alternate slideShow;
+}
+
+.credits-slide img {
+  height: 50%;
+  aspect-ratio: 2362 / 709;
+  padding-left: 10px;
 }
 
 

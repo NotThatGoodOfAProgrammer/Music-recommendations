@@ -283,17 +283,22 @@ function App() {
           </button>
         </div>
         <div className='credits-container'>
-          <label>
-            Made by: Armatys Konrad
-            <br/>
-            Check me on <a href='https://github.com/NotThatGoodOfAProgrammer' target="_blank" rel='noreferrer'>GitHub</a>
-          </label>
+          <div className='credits-slide'>
+            All of the data from: <img src={process.env.PUBLIC_URL + "/Spotify_Logo_RGB_Green.webp"} alt="Spotify logo"></img>
+          </div>
+          <div className='credits-slide'>
+            <label>
+              Made by: Armatys Konrad
+              <br/>
+              Check me on <a href='https://github.com/karmatys8' target="_blank" rel='noreferrer'>GitHub</a>
+            </label>
+          </div>
         </div>
         <div className='change-page-button-container'>
           <button
             className='change-page-button'
             disabled={
-              nextPage === null  || // Spotify allows setting an offset larger than the number of elements. This is in order to prevent empty pages being shown
+              (! nextPage)  || // Spotify allows setting an offset larger than the number of elements. This is in order to prevent empty pages being shown
               (albumsData.length < typeParameter.dataLimit  &&  artistsData.length < typeParameter.dataLimit
               &&  playlistsData.length < typeParameter.dataLimit  &&  tracksData.length < typeParameter.dataLimit)
             }
