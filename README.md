@@ -22,9 +22,15 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 * Writing README.md files
 * Projects file structure
 
+## Quick showcase
+
+https://github.com/karmatys8/RECOMmusicENDATIONS/assets/109459018/7d1ce88e-5863-4270-9118-fb2e29be9c2b
+
 ## How to use guide:
 
-0. *Only once* I have to add you to my Projects user list, else Spotify will throw error 403 if you interact with anything. Message me e-mail that you use for Spotify and optionally your full name
+0. *Only once*
+    * I have to add you to my Projects user list, else Spotify will throw error 403 if you interact with anything. Message me email that you use for Spotify and optionally your full name
+    * Use test account that is already added mail: "testrecommusicendations@gmail.com", password: "Test_Only"
 1. Click on "Get token" and login with Spotify account
 2. Choose what type you are looking for in filters
 3. *Optional* Select date release and/or genres in filters
@@ -36,6 +42,8 @@ and recalling frustration from mismatched Spotify recommendations.<br>
 9. Press button in top left corner
 10. *Optional* Add genres*
 11. Click on "See results" and enjoy **RECOMmusicENDATIONS**
+
+\* *only up to 5 results and genres combined can be chosen at once*
 
 \* *only up to 5 results and genres combined can be choosen at once*
 
